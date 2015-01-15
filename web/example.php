@@ -4,6 +4,13 @@
         <h1>Flint Hills Dashboard</h1>
         <p class="lead">A quick mockup showing a web map and interactive chart.</p>
       </div>
+      
+      <div id='map'></div>
+    <script>
+    L.mapbox.accessToken = 'pk.eyJ1IjoiemFjaGZsYW5kZXJzIiwiYSI6Im5PQWUydWMifQ.K3IgstPvVhP6ZDoXsKNzJQ';
+    var map = L.mapbox.map('map', 'examples.map-i86nkdio')
+    .setView([39.15, -96.5], 10);
+    </script>
 
     </div><!-- /.container -->
 
