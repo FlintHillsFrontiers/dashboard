@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -8,6 +7,22 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
+      
+    <?php
+require('../vendor/autoload.php');
+$app = new Silex\Application();
+$app['debug'] = true;
+// Register the monolog logging service
+$app->register(new Silex\Provider\MonologServiceProvider(), array(
+  'monolog.logfile' => 'php://stderr',
+));
+// Our web handlers
+$app->get('/', function() use($app) {
+  $app['monolog']->addDebug('logging output.');
+  return 'Hello';
+});
+$app->run();
+?>
 
     <title>Starter Template for Bootstrap</title>
 
