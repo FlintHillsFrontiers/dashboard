@@ -6,6 +6,7 @@
       </div>
       
       <div id='map'></div>
+      <div class="chart"></div>
     <script>
     L.mapbox.accessToken = 'pk.eyJ1IjoiemFjaGZsYW5kZXJzIiwiYSI6Im5PQWUydWMifQ.K3IgstPvVhP6ZDoXsKNzJQ';
     var map = L.mapbox.map('map', 'examples.map-i86nkdio')
@@ -13,7 +14,7 @@
     </script>
 
     </div><!-- /.container -->
-<div class="chart"></div>
+
     <script>
 
 var data = [4, 8, 15, 16, 23, 42];
