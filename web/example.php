@@ -13,22 +13,152 @@
     .setView([39.15, -96.5], 10);
     </script>
 
-    </div><!-- /.container -->
+     <!-- d3.js-->
+Select Geography:<br>
+<div class="btn btn-default flinthills">Flint Hills</div>
+<div class="btn btn-default manhattan">Manhattan</div>
+<div class="btn btn-default marys">Marysville</div>
+ 
+<svg class="chart" id="chart"></svg>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
 
-    <script>
-
-var data = [4, 8, 15, 16, 23, 42];
+var margin = {top: 20, right: 30, bottom: 30, left: 355},
+    width = 960 - margin.left - margin.right,
+    height = 750 - margin.top - margin.bottom;
 
 var x = d3.scale.linear()
-    .domain([0, d3.max(data)])
-    .range([0, 420]);
+    .range([0, width]);
 
-d3.select(".chart")
-  .selectAll("div")
-    .data(data)
-  .enter().append("div")
-    .style("width", function(d) { return x(d) + "px"; })
-    .text(function(d) { return d; });
+var y = d3.scale.ordinal()
+    .rangeRoundBands([0, height], .1);
+
+var xAxis = d3.svg.axis() 
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+var chart = d3.select(".chart")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+
+
+    
+    d3.tsv("data.tsv", type, function(error, data) {
+        
+    x.domain([0, d3.max(data, function(d) { return d.value; })]);
+    y.domain(data.map(function(d) { return d.name; }));
+
+  
+
+    chart.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);
+  
+    chart.selectAll(".bar")
+        .data(data)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", x)
+        .attr("y", function(d) { return y(d.name); })
+        .attr("width", function(d) { return x(d.value); })
+        .attr("height", y.rangeBand());
+        
+    chart.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+      });
+      
+  function type(d) {
+          d.value = +d.value; // coerce to number
+          return d;
+        }
+
+  
+d3.select(".marys")
+    .on("click", function(){
+        
+        
+        d3.tsv("marysville.tsv", type, function(error, data) {
+        
+        
+          
+            chart.selectAll(".bar")
+                .data(data)
+                .transition()
+                .duration(1500)
+                .attr("class", "bar")
+                .attr("x", x)
+                .attr("y", function(d) { return y(d.name); })
+                .attr("width", function(d) { return x(d.value); })
+                .attr("height", y.rangeBand());
+                
+           
+        });
+    });
+
+    d3.select(".manhattan")
+    .on("click", function(){
+        
+        
+        d3.tsv("manhattan.tsv", type, function(error, data) {
+        
+       
+
+           
+          
+            chart.selectAll(".bar")
+                .data(data)
+                .transition()
+                .duration(1500)
+                .attr("class", "bar")
+                .attr("x", x)
+                .attr("y", function(d) { return y(d.name); })
+                .attr("width", function(d) { return x(d.value); })
+                .attr("height", y.rangeBand());
+                
+           
+        });
+    });
+      
+ d3.select(".flinthills")
+    .on("click", function(){
+        
+        
+        d3.tsv("data.tsv", type, function(error, data) {
+        
+          
+
+  
+
+            
+          
+            chart.selectAll(".bar")
+                .data(data)
+                .transition()
+                .duration(1500)
+                .attr("class", "bar")
+                .attr("x", x)
+                .attr("y", function(d) { return y(d.name); })
+                .attr("width", function(d) { return x(d.value); })
+                .attr("height", y.rangeBand());
+                
+            
+        });
+    });
+ 
+            
+
+
+
 
 </script>
 
