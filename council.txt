@@ -1,0 +1,44 @@
+name	value
+Strenghthen Public Schools	8
+Increase High Speed Internet Connectivity	6
+Protect Water Quality and Avoid Runoff	7
+Promote Agritourism	7
+Revitalize Historic Downtowns	6
+Boost Entrepreneurialism	7
+Encourage Productive Conservation Programs	4
+Develop National Recreation/Cultural Destinations	4
+Control Invasive Species	5
+Promote the Flint Hills Brand	4
+Use Incentives to Finance (Re)Development	5
+Conduct Comprehensive Planning	3
+Connect Arts Organizations and Resources	1
+Provide Efficient Services in Rural Areas	3
+Improve Public Health and Wellbeing	4
+Align Housing Stock with Housing Need	3
+"Use Zoning, Ordinances, and Plan Review Process to Direct Development"	2
+Develop Tribal Cultural Assets	2
+Improve Opportunities for Aging in Place	2
+Promote Appropriate Burning of the Prairie	3
+Support Travel KS as the Online Cultural Hub for the Flint Hills	3
+Improve Regional Transit	0
+Add Scenic Bikeways to the By-ways Program	5
+Improve Transportation Infrastructure	8
+Create K-12 Curriculum about the Flint Hills Ecosystem	3
+Expand the Succession Training Program	1
+Explore Innovative Farm and Ranch Practices	2
+Map Regional Assets	1
+Improve Energy & Water Efficiency of Buildings	4
+Market Flint Hills Farm & Ranch Products	2
+Develop a Volunteer Hub	2
+Develop a Leadership/Mentorship Program	2
+Improve Rural Networking Capacity	0
+Enable Youth to Start Farming and Ranching	3
+Increase Healthy Food Access in Rural Areas	2
+Leverage the Animal Health Corridor	1
+Encourage Complete Streets and Mixed Use Development	0
+Develop a Rideshare Program	3
+Conduct a Trucking and Rail Logistics Study	0
+Create a Faith-Based Hub	0
+Create Flint Hills Energy Generation Policy	0
+Use Planning to avoid Encroachment on Fort Riley	0
+Celebrate Cultural Impact of Fort Riley	0
