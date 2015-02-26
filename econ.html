@@ -27,6 +27,10 @@
         
         <!-- d3.js-->
         <script src="http://d3js.org/d3.v3.min.js"></script>
+	
+	<!-- Table Top-->
+	<script src='tabletop.js'></script>
+	
     </head>
 
   <body>
@@ -46,7 +50,7 @@
           <ul class="nav navbar-nav">
             <li><a href="index.html">Strategy Prioritization Results</a></li>
             <li class=active><a href="econ.html">Economy</a></li>
-            <li><a href="map.html">Big Map</a></li>
+            
             
           </ul>
         </div><!--/.nav-collapse -->
@@ -72,11 +76,28 @@
                 
                 
             </div>
-        <input type="range" id="yearRange" value="2007"  min="2007" max="2013" step="1"  onchange="showValue(this.value)" />
+        <input type="range" id="yearRange" value="2007"  min="2007" max="2013" step="1" />
             <span id="range"></span>
           
 
     <script>
+      var dataset;
+      window.onload = function() { init() };
+
+      var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=194fY194abaOe9gjopnutM0kBWpnss8-f-wod8YzrjCg&output=html';
+
+  function init() {
+    Tabletop.init( { key: public_spreadsheet_url,
+                     callback: showInfo,
+                     simpleSheet: true } )
+  }
+
+  function showInfo(dataset, tabletop) {
+    
+    console.log(dataset);
+    
+  
+  
     
     //Width and height
     var w = 500;
@@ -173,17 +194,13 @@ d3.json("ks-counties.json", function(json) {
     
     
     
-    d3.csv("https://docs.google.com/spreadsheets/d/194fY194abaOe9gjopnutM0kBWpnss8-f-wod8YzrjCg/export?format=csv&id", function(data){
-            //Grab data value, and convert from string to float
-             for (var i = 0; i < data.length; i++) {
-		var dataValue = parseFloat(data[i]['unemprate'+year.toString()]);
-                data[i]['unemprate'+year.toString()] = dataValue;
-            }
+
             
 
             //Draw circles for each point
+	    
             svg.selectAll("circle")
-                .data(data)
+                .data(dataset)
                 .enter()
                 .append("circle")
                 .attr("cx", function(d) {
@@ -213,7 +230,6 @@ d3.json("ks-counties.json", function(json) {
                     //Get this bar's x/y values, then augment for the tooltip
                     var xPosition = parseFloat(d3.select(this).attr("cx")) +30;
                     var yPosition = parseFloat(d3.select(this).attr("cy")) -15;
-                    console.log(xPosition, yPosition);
                     
                     //Update the tooltip position and value
                     d3.select("#tooltip")
@@ -248,17 +264,12 @@ d3.json("ks-counties.json", function(json) {
                 year = document.getElementById("yearRange").value;
                 document.getElementById("range").innerHTML=year;
         
-        d3.csv("https://docs.google.com/spreadsheets/d/194fY194abaOe9gjopnutM0kBWpnss8-f-wod8YzrjCg/export?format=csv&id", function(data){
-            //Grab data value, and convert from string to float
-            for (var i = 0; i < data.length; i++) {
-		var dataValue = parseFloat(data[i]['unemprate'+year.toString()]);
-                data[i]['unemprate'+year.toString()] = dataValue;
-            }
+       
             
 
             //Draw circles for each point
             svg.selectAll("circle")
-                .data(data)
+                .data(dataset)
                 .transition()
                 .duration(1000)
                 .attr("cx", function(d) {
@@ -284,7 +295,6 @@ d3.json("ks-counties.json", function(json) {
 		})
                 .style("opacity",".75")
                 .on("mouseover", function(d) {
-
                     //Get this bar's x/y values, then augment for the tooltip
                     var xPosition = parseFloat(d3.select(this).attr("cx")) +30;
                     var yPosition = parseFloat(d3.select(this).attr("cy")) -15;
@@ -319,8 +329,8 @@ d3.json("ks-counties.json", function(json) {
     
     
     
-    });
-    });
+    
+  }
     
    
      
