@@ -61,7 +61,7 @@
      */
     
    
-    d3.json("flinthills.geojson", function(json) {
+    d3.json("data/flinthills.geojson", function(json) {
 
 	//Draw Flint Hills Counites
 	svg.selectAll("path")
@@ -94,7 +94,7 @@
             .style("text-transform","uppercase");
 
       //Draw rest of Kansas Counties
-      d3.json("ks-counties.json", function(json) {
+      d3.json("data/ks-counties.json", function(json) {
 
 	  //Bind data and create one path per GeoJSON feature
 	  svg.selectAll("path")
@@ -109,7 +109,7 @@
 	      .style("stroke-width","0.5");
         
 	//Draw US states Boundaries
-	d3.json("us-states.geojson", function(json) {
+	d3.json("data/us-states.geojson", function(json) {
 	  //Bind data and create one path per GeoJSON feature
 	  svg.selectAll("path")
 	      .data(json.features)
