@@ -2,6 +2,32 @@ function drawInfographic(metric){
     console.log("it worked");
     switch (metric) {
         
+        case metric = "help":
+            var availableInfographics = ["Strategy Prioritization Results (metric = strategyprioritization)", "Unemployment by County Over Time (metric = unemployment)"];
+            var div = document.createElement("div");
+              var idAtt = document.createAttribute("id");
+              idAtt.value = "infographichelp";
+              div.setAttributeNode(idAtt);
+              document.getElementById('infographics').appendChild(div);
+              document.getElementById('infographichelp').innerHTML = "<div class='panel panel-default' style='width: 1050px;'>\
+                <div class='panel-heading'>\
+                    <h3 class='panel-title'>Available Infographics</h3>\
+                </div>\
+                <div class='panel-body'>\
+                    <ul id='helpcontent'></ul>\
+                </div>\
+                </div>";
+              
+              for (var i=0; i < availableInfographics.length; i++) {
+                var li = document.createElement("li");
+                var listitem = document.createTextNode(availableInfographics[i]);
+                li.appendChild(listitem);
+                document.getElementById('helpcontent').appendChild(li);
+              }
+              
+            
+            break;
+        
         case metric = "strategyprioritization":    
             console.log("Straetgy Prioritization Infographic");
               var div = document.createElement("div");
@@ -59,7 +85,7 @@ function drawInfographic(metric){
                   .attr("transform", "translate(" + toolMargin.left + "," + toolMargin.top + ")");
               
               //Draw the chart using all Flint Hills data
-              d3.tsv("data/data.tsv", type, function(error, data) {
+              d3.tsv("dashboard/data/data.tsv", type, function(error, data) {
                       
                   toolx.domain([0, d3.max(data, function(d) { return d.value; })]);
                   tooly.domain(data.map(function(d) { return d.name; }));
@@ -91,7 +117,7 @@ function drawInfographic(metric){
               //Redraw with all Flint Hills data      
               d3.select(".flinthills")
                   .on("click", function(){
-                      d3.tsv("data/data.tsv", type, function(error, data) {
+                      d3.tsv("dashboard/data/data.tsv", type, function(error, data) {
                           toolchart.selectAll(".toolbar")
                               .data(data)
                               .transition()
@@ -107,7 +133,7 @@ function drawInfographic(metric){
               //Redraw with Leader's Meeting Data
               d3.select(".leaders")
                   .on("click", function(){
-                      d3.tsv("data/leaders.tsv", type, function(error, data) {
+                      d3.tsv("dashboard/data/leaders.tsv", type, function(error, data) {
                           toolchart.selectAll(".toolbar")
                               .data(data)
                               .transition()
@@ -123,7 +149,7 @@ function drawInfographic(metric){
               //Redraw with Council Grove Data
               d3.select(".council")
                   .on("click", function(){
-                      d3.tsv("data/council.tsv", type, function(error, data) {
+                      d3.tsv("dashboard/data/council.tsv", type, function(error, data) {
                           toolchart.selectAll(".toolbar")
                               .data(data)
                               .transition()
@@ -138,7 +164,7 @@ function drawInfographic(metric){
               //Redraw with El Dorado Data
               d3.select(".eldo")
                   .on("click", function(){
-                      d3.tsv("data/eldorado.tsv", type, function(error, data) {
+                      d3.tsv("dashboard/data/eldorado.tsv", type, function(error, data) {
                           toolchart.selectAll(".toolbar")
                               .data(data)
                               .transition()
@@ -154,7 +180,7 @@ function drawInfographic(metric){
               //Redraw with Emporia Data 
               d3.select(".emporia")
                   .on("click", function(){
-                      d3.tsv("data/Emporia.tsv", type, function(error, data) {
+                      d3.tsv("dashboard/data/Emporia.tsv", type, function(error, data) {
                           toolchart.selectAll(".toolbar")
                               .data(data)
                               .transition()
@@ -170,7 +196,7 @@ function drawInfographic(metric){
               //Redraw with Manhattan Data
               d3.select(".manhattan")
                   .on("click", function(){
-                      d3.tsv("data/manhattan.tsv", type, function(error, data) {
+                      d3.tsv("dashboard/data/manhattan.tsv", type, function(error, data) {
                           toolchart.selectAll(".toolbar")
                               .data(data)
                               .transition()
@@ -186,7 +212,7 @@ function drawInfographic(metric){
               //Redraw with Marysville Data
               d3.select(".marys")
                   .on("click", function(){
-                      d3.tsv("data/marysville.tsv", type, function(error, data) {
+                      d3.tsv("dashboard/data/marysville.tsv", type, function(error, data) {
                           toolchart.selectAll(".toolbar")
                               .data(data)
                               .transition()
@@ -202,7 +228,7 @@ function drawInfographic(metric){
               //Redraw with Pawhuska Data
               d3.select(".pawhuska")
                   .on("click", function(){
-                      d3.tsv("data/pawhuska.tsv", type, function(error, data) {
+                      d3.tsv("dashboard/data/pawhuska.tsv", type, function(error, data) {
                           toolchart.selectAll(".toolbar")
                               .data(data)
                               .transition()
@@ -354,7 +380,7 @@ function drawInfographic(metric){
      */
     
    
-    d3.json("data/flinthills.geojson", function(json) {
+    d3.json("dashboard/data/flinthills.geojson", function(json) {
 
 	//Draw Flint Hills Counites
 	svg.selectAll("path")
@@ -387,7 +413,7 @@ function drawInfographic(metric){
             .style("text-transform","uppercase");
 
       //Draw rest of Kansas Counties
-      d3.json("data/ks-counties.json", function(json) {
+      d3.json("dashboard/data/ks-counties.json", function(json) {
 
 	  //Bind data and create one path per GeoJSON feature
 	  svg.selectAll("path")
@@ -401,7 +427,7 @@ function drawInfographic(metric){
 	      .style("stroke-width","0.5");
         
 	//Draw US states Boundaries
-	d3.json("data/us-states.geojson", function(json) {
+	d3.json("dashboard/data/us-states.geojson", function(json) {
 	  //Bind data and create one path per GeoJSON feature
 	  svg.selectAll("path")
 	      .data(json.features)
