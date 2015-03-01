@@ -1,20 +1,21 @@
 .content{padding-top:50px;}
 #map {position: relative; top: 0px; bottom: 0px; width:100%; height:100%; z-index: 0;}
 
-.bar {
+.toolbar {
   fill: #2980b9;
 }
 
-.bar:hover {
+.toolbar:hover {
   fill: #3498db;
 }
 
+
 circle:hover {
-    opacity: 1 !important;
+    opacity: .9 !important;
 }
 
 
-.chart text {
+.toolchart text {
   font: 10px sans-serif;
   text-anchor: end;
 }
@@ -35,7 +36,7 @@ circle:hover {
  display: none;
 }
 
-.x.axis line{
+.y.axis line{
     stroke: #e7e7e7;
 }
 
