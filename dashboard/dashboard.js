@@ -357,7 +357,6 @@ function drawInfographic(metric){
             function drawMap(dataset, tabletop) {
               
               dataArray[0]=dataset;
-              console.log(dataArray);
             
               //Width and height
               var w = 400;
@@ -650,6 +649,279 @@ function drawInfographic(metric){
             init();
             init2();
         break;
+
+        
+/*
+ *
+ *  BEGIN COMMUTE METRIC
+ *
+ */     
+/*    
+        case metric = "commute":
+            var div = document.createElement("div");
+            var idAtt = document.createAttribute("id");
+            idAtt.value = "commute";
+            div.setAttributeNode(idAtt);
+            document.getElementById('infographics').appendChild(div);
+            document.getElementById('commute').innerHTML ="<div class='panel panel-default' style='width: 1050px;'>\
+                <div class='panel-heading' >\
+                    <button type='button' class='btn btn-default pull-right btn-xs'> <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span></button>\
+                    <h3 class='panel-title'>Flint Hills Commute Time and Mode by County</h3>\
+                </div>\
+                <div class='panel-body' style='height:525px;'>\
+                <!-- Following div sets size of infographic. This layer contains the tooltips; the next div is for the map, which is pulled underneath the tooltips with a negative margin -->\
+                <!-- Following div contains the map, which is pulled underneath the tooltips with a negative margin -->\
+                <div class='commutemap'></div></div>\
+                </div>";
+            
+           function toggleColor() {
+               var currentColor = "#e7e7e7";
+            
+                return function(){
+                    currentColor = currentColor == "#e7e7e7" ? "#3498db" : "#e7e7e7";
+                    d3.select(this).style("fill", currentColor);
+                }
+                
+            }
+            
+            function drawMap() {
+              
+              
+            
+              //Width and height
+              var w = 400;
+              var h = 500;
+              
+              //Define Projection and Scale                    
+              var projection = d3.geo.albersUsa()
+                  .scale([7200])
+                  .translate([w/2, h/2.9]);
+           
+              //Define default path generator
+              var path = d3.geo.path()
+                  .projection(projection);
+                  
+              //Create SVG element
+              var svg = d3.select(".commutemap")
+                  .append("svg")
+                  .attr("width", w)
+                  .attr("height", h);
+           
+              var countyname;                                    
+                  
+                           
+          
+              
+               //The following function draws the Flint Hills counties, kansas counties, US state boundaries, and unemployment circles.
+               //It also includes the function to update the unemployment circles based on year.  The functions are nested to
+               //ensure proper drawing order.
+               
+    
+   
+                d3.json("dashboard/data/flinthills.geojson", function(json) {
+                    
+                    
+            
+                    //Draw Flint Hills Counites
+                    svg.selectAll("path")
+                        .data(json.features)
+                        .enter()
+                        .append("path")
+                        .attr("d", path)
+                        .attr("id", function(d){
+                            
+                            return "commute" + d.properties.NAME10;
+                        })
+                        .style("fill","#e7e7e7")
+                        .style("stroke","#ddd")
+                        .style("stroke-width","0.5")
+                        .on("click", toggleColor());
+                        
+                    //Labels for Flint Hills Counties
+                    svg.selectAll("text")
+                        .data(json.features)
+                        .enter()
+                        .append("text")
+                        .text(function(d){
+                            return d.properties.NAME10;
+                        })
+                        .attr("text-anchor", "middle")
+                        .attr("x", function(d){
+                            return projection([d.properties.INTPTLON10, d.properties.INTPTLAT10])[0];
+                        })
+                        .attr("y", function(d){
+                            return projection([d.properties.INTPTLON10, d.properties.INTPTLAT10])[1];
+                        })
+                        .style("fill","#000")
+                        .attr("text-anchor", "middle")
+                        .style("font-size","8.5px")
+                        .style("text-transform","uppercase");
+            
+                  //Draw rest of Kansas Counties
+                  d3.json("dashboard/data/ks-counties.json", function(json) {
+            
+                      //Bind data and create one path per GeoJSON feature
+                      svg.selectAll("path")
+                          .data(json.features)
+                          .enter()
+                          .append("path")
+                          .attr("d", path)
+                          .style("fill","none")
+                          .style("fill-opacity","0")
+                          .style("stroke","#ddd")
+                          .style("stroke-width","0.5");
+                    
+                    //Draw US states Boundaries
+                    d3.json("dashboard/data/us-states.geojson", function(json) {
+                      //Bind data and create one path per GeoJSON feature
+                      svg.selectAll("path")
+                          .data(json.features)
+                          .enter()
+                          .append("path")
+                          .attr("d", path)
+                          .style("fill","none")
+                          .style("stroke","#999");
+                     
+               
+                    //Draw circles for each point
+                     
+                    });  //End State Layer
+                  }); //End Kansas Counties Layer
+                }); //End Flint Hills Counties Layer
+    
+                //Begin section for updating based on year
+                
+                
+       
+                function numberWithCommas(x) {
+                    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+            }
+            function drawChart(data){
+              
+                y.domain([0, 0.1 ]).range([height, 0]);
+                x.domain(data.map(function(d) { return d.area; }));
+            
+              
+                chart.append("g")
+                    .attr("class", "x axis")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(xAxis);
+                    
+                    chart.append("g")
+                      .attr("class", "y axis")
+                      .call(yAxis);
+                
+              
+              
+                chart.selectAll(".bar")
+                    .data(data)
+                    .enter().append("rect")
+                    .attr("class", "bar")
+                    .attr("x", function(d) { return x(d.area); })
+                    .attr("y", function(d){ return height - y(0.1-d[year.toString()]);} )
+                    .attr("width", x.rangeBand())
+                    .attr("height", function(d) { return y(0.1-d[year.toString()]); } )
+                    .style("fill", function(d) {
+                        var value = d[year.toString()];			   		
+                        if(value) {
+                          return color(value);
+                        }
+                        else {
+                          //If value is undefined…
+                            return "#333";
+                        }
+                      });
+                    
+                
+            
+            
+            
+            }
+
+            drawMap();
+            drawChart();
+        break;
+*/
+
+/*
+ *
+ *  BEGIN COMMUTE2 METRIC
+ *
+ */     
+
+        case metric = "commute2":
+            var div = document.createElement("div");
+            var idAtt = document.createAttribute("id");
+            idAtt.value = "commute";
+            div.setAttributeNode(idAtt);
+            document.getElementById('infographics').appendChild(div);
+            document.getElementById('commute').innerHTML ="<div class='panel panel-default' style='width: 1050px;'>\
+                <div class='panel-heading' >\
+                    <button type='button' class='btn btn-default pull-right btn-xs'> <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span></button>\
+                    <h3 class='panel-title'>Flint Hills Commute Time and Mode by County</h3>\
+                </div>\
+                <div class='panel-body' style='height:525px;'>\
+                <!-- Following div sets size of infographic. This layer contains the tooltips; the next div is for the map, which is pulled underneath the tooltips with a negative margin -->\
+                <!-- Following div contains the map, which is pulled underneath the tooltips with a negative margin -->\
+                <div class='commutemap'></div></div>\
+                </div>";
+            
+           
+            
+            
+            function drawChart(data){
+              
+                y.domain([0, 0.1 ]).range([height, 0]);
+                x.domain(data.map(function(d) { return d.area; }));
+            
+              
+                chart.append("g")
+                    .attr("class", "x axis")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(xAxis);
+                    
+                    chart.append("g")
+                      .attr("class", "y axis")
+                      .call(yAxis);
+                
+              
+              
+                chart.selectAll(".bar")
+                    .data(data)
+                    .enter().append("rect")
+                    .attr("class", "bar")
+                    .attr("x", function(d) { return x(d.area); })
+                    .attr("y", function(d){ return height - y(0.1-d[year.toString()]);} )
+                    .attr("width", x.rangeBand())
+                    .attr("height", function(d) { return y(0.1-d[year.toString()]); } )
+                    .style("fill", function(d) {
+                        var value = d[year.toString()];			   		
+                        if(value) {
+                          return color(value);
+                        }
+                        else {
+                          //If value is undefined…
+                            return "#333";
+                        }
+                      });
+                    
+                
+            
+            
+            
+            }
+
+            
+            function init2() {
+              Tabletop.init( { key: public_spreadsheet_url2,
+                               callback: drawChart,
+                               simpleSheet: true } )
+            }
+          
+            init2();
+        break;
+
         
         default:
             console.log ('switch activated');
