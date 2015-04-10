@@ -1,0 +1,158 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Dashboard</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+        
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+            <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+            <link rel="stylesheet" href="example.css">
+                <link rel="stylesheet" href="http://zachflanders.com/FlintHills/dashboard/dashboard.css"></link>
+            <style type="text/css">
+			
+			.axis path,
+			.axis line {
+				fill: none;
+				stroke: black;
+				shape-rendering: crispEdges;
+			}
+			
+			.axis text {
+				font-family: sans-serif;
+				font-size: 11px;
+			}
+                        .legend text {
+				font-family: sans-serif;
+				font-size: 11px;
+			}
+                        
+                        .bar:hover {
+                            opacity: 1 !important;
+                            box-shadow:  0px 0px 1px #999999 !important;
+                        }
+                        .fa{
+                            width: 32px;
+                            display: inline-block;
+                            text-align: center;
+                            margin-right: 10px;
+                        }
+			img.logo{
+                          margin-right: 10px;
+                          margin-left: 10px;
+                         }
+                         
+
+
+		</style>
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+         <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#"><div class="row"><img src="logo.png" class="logo">Flint Hills Frontiers</div></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+	    <li><a href="#"><i class="fa fa-book"></i>Plan</a></li>
+            <li><a href="#"><i class="fa fa-tachometer"></i>Dashboard</a></li>
+	    <li><a href="#"><i class="fa fa-briefcase"></i>Toolbox</a></li>
+            <li><a href="#"><i class="fa fa-newspaper-o"></i>News</a></li>
+            <li><a href="#"><i class="fa fa-question-circle"></i>Help</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+	  <h4><i class="fa fa-tachometer"></i>Dashboard</h4><hr>
+          <ul class="nav nav-sidebar">
+            <li><a href="#"><i class="fa fa-th-large"></i>Overview <span class="sr-only">(current)</span></a></li>
+            <li><a href="#"><i class="fa fa-leaf"></i>Natural Systems</a></li>
+            <li><a href="#"><i class="fa fa-users"></i>Cultural Systems</a></li>
+            <li ><a href="commute.html"><i class='fa fa-car'></i>Mobility</a></li>
+            <li class="active"><a href="econ.html"><i class="fa fa-usd"></i>Economy</a></li>
+            <li><a href="#"><i class="fa fa-home"></i>Built Environment</a></li>
+            <li><a href="#"><i class='fa fa-car'></i>Farm & Ranch</a></li>
+            <li><a href="#"><i class='fa fa-smile-o'></i>Social Systems</a></li>
+          </ul>
+          
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <h2>Economy</h2>
+            <p>Economy relates to what people do for work in the Flint Hills and the goods and services we make here.</p>
+            <h3>Metrics</h3>
+            <div class="btn-group" role="group" aria-label="...">
+                <button type="button" class="btn btn-default" id="line"><i class="fa fa-line-chart"></i>Employment by Industry</button>
+		<button type="button" class="btn btn-default" id="bar"><i class="fa fa-bar-chart"></i>Unemployment</button>
+                <button type="button" class="btn btn-default"><i class="fa fa-pie-chart"></i>...</button>
+            </div>
+            <hr>
+	      <div id="content"></div>
+          <!--
+	  <div id="infographics">
+            <script>
+                window.onload = function() {
+				
+				drawInfographic("unemployment");				
+				
+			}
+            </script>
+	</div>
+          -->
+          
+          
+        </div>
+      </div>
+    </div>
+        
+        
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+       
+        <script src="http://zachflanders.com/FlintHills/dashboard/dashboard.js"></script>
+        <script src="http://zachflanders.com/FlintHills/dashboard/tabletop.js"></script>
+	<script src="employment.js"></script>
+	<script src="unemployment.js"></script>
+	<script>
+	    $(document).ready(function(){
+		
+		$("#bar").click(function(){
+		    $('#unemployment').removeClass('hidden');
+		     $("#unemployment").show();
+		     $("#commute2").hide();
+		});
+	    $("#line").click(function(){
+		 
+		 $("#commute2").show();
+		 $("#unemployment").hide();
+	     });
+	    });
+	    
+</script>
+
+
+        
+    </body>
+</html>
