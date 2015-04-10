@@ -40,6 +40,12 @@
                             text-align: center;
                             margin-right: 10px;
                         }
+			.glyphicon{
+                            width: 32px;
+                            display: inline-block;
+                            text-align: center;
+                            margin-right: 10px;
+                        }
                         
                         
                       
@@ -49,6 +55,17 @@
                           margin-right: 10px;
                           margin-left: 10px;
                          }
+			 
+			 path.slice{
+				stroke-width:2px;
+			}
+
+			polyline{
+				opacity: .3;
+				stroke: black;
+				stroke-width: 2px;
+				fill: none;
+			}
                          
 
 

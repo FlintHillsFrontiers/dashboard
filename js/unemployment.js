@@ -603,7 +603,7 @@ function drawInfographic(metric){
                 <option>2012</option>\
                 <option>2013</option>\
                 </datalist>\
-                <input type='range' id='yearRange' value='2007'  min='2007' max='2013' step='1' list='yearlist' >\
+                <div class='col-md-12'><input type='range' id='yearRange' value='2007'  min='2007' max='2013' step='1' list='yearlist' >\
                 <div class='btn-toolbar' role='toolbar' aria-label='...'>\
                 <div class='btn-group btn-group-sm' role='group' aria-label='...'>\
                   <button type='button' class='btn btn-default' disabled='disabled'> <span class='glyphicon glyphicon-step-backward' aria-hidden='true'></span></button>\
@@ -612,7 +612,7 @@ function drawInfographic(metric){
                 </div>\
                 <div class='btn-group btn-group-sm' role='group' aria-label='...'>\
                   <span id='range' class='pull-right' style='font-weight: bold; padding-top: 5px; padding-left: 5px;'></span>\
-                  </div>";
+                  </div></div>";
     
   
             var dataArray = [0,0];

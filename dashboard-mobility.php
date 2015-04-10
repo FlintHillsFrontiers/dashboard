@@ -5,15 +5,18 @@
             <h2>Mobility</h2>
             <p>Mobility is the ability to get around the Flint Hills.  It includes transportation infrastructure and land use policies that determine the location of destinations in our communities.  This topic considers your ability to get to work on time and the ability to ship goods to and from the region.</p>
             <h3>Metrics</h3>
+	    <ul><li>Commuting</li></ul>
+	    <hr>
+	    <h3>Commuting</h3>
             <div class="btn-group" role="group" aria-label="...">
                 <button type="button" class="btn btn-default" id="bar"><i class="fa fa-bar-chart"></i>% Commuting 30, 45, & 60+ min.</button>
                 <button type="button" class="btn btn-default" id="line"><i class="fa fa-line-chart"></i>Avg. Commute Time</button>
-                <button type="button" class="btn btn-default" id="pie"><i class="fa fa-pie-chart"></i>Mode Share</button>
+                <button type="button" class="btn btn-default" id="pie"><i class="fa fa-pie-chart"></i>Means of Travel</button>
             </div>
-            <hr>
-          <div id="content">
-            
-          </div>
+	    <hr>
+            <div id="content">            
+	    </div>
+	    
           
         </div>
 </div>
