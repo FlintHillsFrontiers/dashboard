@@ -574,7 +574,12 @@ function drawChart(data){
   idAtt.value = "commute";
   div.setAttributeNode(idAtt);
   document.getElementById('content').appendChild(div);
-  document.getElementById('commute').innerHTML ="<h3 class='panel-title'>Flint Hills Commute Time by County</h3><br>";
+  document.getElementById('commute').innerHTML ="<h4>Flint Hills Commute Time by County</h4>Year: <select id='yearSelect'>\
+          <option value='1980'>1980</option>\
+          <option value='1990'>1990</option>\
+          <option value='2000'>2000</option>\
+          <option value='2010'>2010</option>\
+          </select><br><br>";
   
   //Width and height
   var w = 850;

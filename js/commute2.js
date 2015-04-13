@@ -578,7 +578,7 @@ function drawChart(data){
   classAtt.value = "hidden";
   div.setAttributeNode(classAtt);
   document.getElementById('content').appendChild(div);
-  document.getElementById('commute2').innerHTML ="<h3 class='panel-title'>Flint Hills Commute Time by County</h3>";
+  document.getElementById('commute2').innerHTML ="<h4>Flint Hills Commute Time by County</h4>";
   
   //Width and height
   var w = 850;
@@ -598,7 +598,10 @@ function drawChart(data){
   
   //The color scale
   var color = d3.scale.ordinal()
-    .range(['rgb(166,206,227)','rgb(31,120,180)','rgb(178,223,138)','rgb(51,160,44)','rgb(251,154,153)','rgb(227,26,28)','rgb(253,191,111)','rgb(255,127,0)','rgb(202,178,214)','rgb(106,61,154)','rgb(255,255,153)','rgb(177,89,40)']);
+    .range(['rgb(240,163,10)','rgb(130,90,44)','rgb(0,80,239)','rgb(162,0,37)','rgb(27,161,226)',
+            'rgb(216,0,115)','rgb(164,196,0)','rgb(106,0,255)','rgb(96,169,23)','rgb(0,138,0)',
+            'rgb(118,96,138)','rgb(109,135,100)','rgb(250,104,0)','rgb(244,114,208)','rgb(229,20,0)',
+            'rgb(122,59,63)','rgb(100,118,135)','rgb(0,171,169)','rgb(170,0,255)','rgb(216,193,0)','rgb(0,0,0)']);
   
   var y = d3.scale.linear()
     .domain([0, 30])
@@ -635,6 +638,10 @@ function drawChart(data){
   //Group by Year Label
   var labelVar = 'Year';
   
+  function key(d) {
+    return d.name;
+  }
+  
   //Grab the labels for the data fields (exclude county names)
   var varNames = d3.keys(data[0])
     .filter(function(key){return key !==labelVar && key !== 'Source';});
@@ -663,7 +670,7 @@ function drawChart(data){
   //Draw the Lines
                 
     var series = svg.selectAll(".series")
-      .data(seriesData)
+      .data(seriesData, key)
       .enter().append("g")
       .attr("class", "series");
 
@@ -753,7 +760,7 @@ function drawChart(data){
             d3.select("#"+d+"line").style("-webkit-filter","drop-shadow( 0px 0px 2px rgba(0,0,0,.0) )");
             d3.select("#"+d+"line").style("filter","drop-shadow( 0px 0px 2px rgba(0,0,0,.0) )");
           })
-        .style("opacity",".6");
+        .style("opacity",".5");
   
   //Add the legend text
   legend.append('text')                                  
@@ -804,13 +811,16 @@ function drawChart(data){
 
 
     var newLines = svg.selectAll(".series")
-    .data(seriesData).attr("class","series");
+      .data(seriesData, key).attr("class","series");
+      
+      var linesUpdate = d3.transition(newLines)
+        .attr("d", function (d) { return line(d.values);});
     
-    newLines.transition().duration(1500).attr("d", function (d) { return line(d.values).style("stroke", function (d) { return color(d.name); })
+    newLines.transition().duration(1500).attr("d", function (d) { return line(d.values);}).style("stroke", function (d) { return color(d.name); })
         .style("stroke-width", "4px")
-        .style("fill", "none"); });
+        .style("fill", "none"); 
         
-        newLines.enter()
+    newLines.enter()
         .append("path")
         .attr("class", "series")
         .attr("d", function (d) { return line(d.values); })
@@ -827,11 +837,12 @@ function drawChart(data){
         .style("opacity",".75");
         
       newLines.exit().remove();
+    });
         
     
 
-      
-});
+
+
 
 
           
