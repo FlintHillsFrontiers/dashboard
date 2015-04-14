@@ -5,15 +5,20 @@
             <h2>Mobility</h2>
             <p>Mobility is the ability to get around the Flint Hills.  It includes transportation infrastructure and land use policies that determine the location of destinations in our communities.  This topic considers your ability to get to work on time and the ability to ship goods to and from the region.</p>
             <h3>Metrics</h3>
-	    <ul><li>Commuting</li></ul>
+	    <div class="row">
+	    <div class="list-group col-md-4">
+			<a href="#" class="list-group-item " id="commutelink"><i class='fa fa-car'></i>Commuting</a>
+			
+
+</div></div>
+	    
 	    <hr>
-	    <h3>Commuting</h3>
+	    <h3 id="commuteanchor"><i class='fa fa-car'></i>Commuting</h3>
             <div class="btn-group" role="group" aria-label="...">
                 <button type="button" class="btn btn-default" id="bar"><i class="fa fa-bar-chart"></i>% Commuting 30, 45, & 60+ min.</button>
                 <button type="button" class="btn btn-default" id="line"><i class="fa fa-line-chart"></i>Avg. Commute Time</button>
                 <button type="button" class="btn btn-default" id="pie"><i class="fa fa-pie-chart"></i>Means of Travel</button>
-            </div>
-	    <hr>
+	    </div>
             <div id="content">            
 	    </div>
 	    
@@ -35,6 +40,14 @@
 	<script src="js/commute2.js"></script>
 	<script src="js/modeshare.js"></script>
 	<script>
+	    
+	    
+	    $("#commutelink").click(function() {
+			$('html, body').animate({
+				    scrollTop: $("#commuteanchor").offset().top-65
+			}, 1000);
+	    });
+	
 	    $(document).ready(function(){
 		
 		$("#bar").click(function(){

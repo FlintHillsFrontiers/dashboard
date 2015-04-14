@@ -3,7 +3,7 @@
         <div class="col-sm-3 col-md-2 sidebar">
 	    <h4><i class="fa fa-tachometer"></i>Dashboard</h4><hr>
           <ul class="nav nav-sidebar">
-            <li class="active"><a href="dashboard-overview.php"><i class="fa fa-th-large"></i>Overview <span class="sr-only">(current)</span></a></li>
+            <li class="active"><a href="dashboard.php"><i class="fa fa-th-large"></i>Overview <span class="sr-only">(current)</span></a></li>
             <li><a href="dashboard-natural.php"><i class="fa fa-leaf"></i>Natural Systems</a></li>
             <li><a href="dashboard-cultural.php"><i class="fa fa-users"></i>Cultural Systems</a></li>
             <li ><a href="dashboard-mobility.php"><i class='fa fa-car'></i>Mobility</a></li>

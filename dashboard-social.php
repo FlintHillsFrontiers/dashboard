@@ -5,14 +5,15 @@
             <h2>Social Systems</h2>
             
             <h3>Metrics</h3>
-	    <ul><li>Community Health</li></ul>
-	    <hr>
-	    <h3>Community Health</h3>
-            <div class="btn-group" role="group" aria-label="...">
-                <button type="button" class="btn btn-default" id="bar"><i class="fa fa-bar-chart"></i>...</button>
-                <button type="button" class="btn btn-default" id="line"><i class="fa fa-line-chart"></i>...</button>
-                <button type="button" class="btn btn-default" id="pie"><i class="fa fa-pie-chart"></i>...</button>
-            </div>
+	    <div class="row">
+	    <div class="list-group col-md-4">
+			<a href="#" class="list-group-item " id="healthlink"><i class='fa fa-medkit'></i>Community Health</a>
+			<a href="#" class="list-group-item"><i class='fa fa-graduation-cap'></i>Educational Attainment</a>
+			<a href="#" class="list-group-item"><i class='fa fa-user-secret'></i>Crime</a>
+
+</div></div>
+	   
+	    
 	    <hr>
             <div id="content">            
 	    </div>
@@ -32,6 +33,13 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
         <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
         <script src="js/health.js"></script>
+	<script>
+	    $("#healthlink").click(function() {
+			$('html, body').animate({
+        scrollTop: $("#health").offset().top-65
+    }, 1000);
+});
+	</script>
 	
 	
 	
