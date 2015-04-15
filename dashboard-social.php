@@ -3,6 +3,7 @@
 <?php include_once 'dashboard-menu.php';?>
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <h2>Social Systems</h2>
+	    <p>The social systems issue area refers to the health, safety, and overall wellbeing of Flint Hills residents.  The metrics for this issue area cover health rankings compared to peer county, as measured by the CDC, educational attainment, and crime in Flint Hills counties.</p>
             
             <h3>Metrics</h3>
 	    <div class="row">
@@ -50,6 +51,9 @@
 			$('html, body').animate({
 				    scrollTop: $("#crime").offset().top-65
 			}, 1000);
+	    });
+	    $(document).ready(function(){	
+			$("#social-menu").addClass('active');
 	    });
 	</script>
 	

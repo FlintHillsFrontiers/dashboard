@@ -53,6 +53,8 @@
 		 $("#commute2").show();
 		 $("#unemployment").hide();
 	     });
+	    
+	    $("#econ-menu").addClass('active');
 	    });
 	    
 </script>

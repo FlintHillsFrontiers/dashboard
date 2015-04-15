@@ -67,6 +67,7 @@
 		     $("#commute").hide();
 		     $("#commute2").hide();
 		 });
+		$("#mobility-menu").addClass('active');
 	    });
 	    
 </script>
