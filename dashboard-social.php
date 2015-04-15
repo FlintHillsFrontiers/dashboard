@@ -9,7 +9,7 @@
 	    <div class="list-group col-md-4">
 			<a href="#" class="list-group-item " id="healthlink"><i class='fa fa-medkit'></i>Community Health</a>
 			<a href="#" class="list-group-item" id="edulink"><i class='fa fa-graduation-cap'></i>Educational Attainment</a>
-			<a href="#" class="list-group-item"><i class='fa fa-user-secret'></i>Crime</a>
+			<a href="#" class="list-group-item" id="crimelink"><i class='fa fa-user-secret'></i>Crime</a>
 
 </div></div>
 	   
@@ -44,6 +44,11 @@
 	    $("#edulink").click(function() {
 			$('html, body').animate({
 				    scrollTop: $("#education").offset().top-65
+			}, 1000);
+	    });
+	    $("#crimelink").click(function() {
+			$('html, body').animate({
+				    scrollTop: $("#crime").offset().top-65
 			}, 1000);
 	    });
 	</script>

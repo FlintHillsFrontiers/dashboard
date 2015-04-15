@@ -578,7 +578,7 @@ function drawChart(data){
   classAtt.value = "hidden";
   div.setAttributeNode(classAtt);
   document.getElementById('content').appendChild(div);
-  document.getElementById('modeshare').innerHTML ="<h4>Flint Hills Means of Travel to Work</h4>\
+  document.getElementById('modeshare').innerHTML ="<h5>Means of Travel to Work by County</h5>\
           Year: <select id='yearSelect'>\
           <option value='1980'>1980</option>\
           <option value='1990'>1990</option>\

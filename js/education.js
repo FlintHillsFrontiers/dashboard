@@ -701,7 +701,7 @@ function drawChart(data){
     .attr("y", -45)
     .attr("dy", ".71em")
     .style("text-anchor", "end")
-    .text("Percentage of Population with Bachelor's Degree or Higher");
+    .text("Percentage of Population Age 25+ with Bachelor's Degree or Higher");
       
   //Add the x axis
   svg.append('g')

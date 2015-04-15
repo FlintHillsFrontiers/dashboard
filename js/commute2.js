@@ -578,7 +578,7 @@ function drawChart(data){
   classAtt.value = "hidden";
   div.setAttributeNode(classAtt);
   document.getElementById('content').appendChild(div);
-  document.getElementById('commute2').innerHTML ="<h4>Flint Hills Commute Time by County</h4>";
+  document.getElementById('commute2').innerHTML ="<h5>Average Commute Time by County</h5>";
   
   //Width and height
   var w = 850;
