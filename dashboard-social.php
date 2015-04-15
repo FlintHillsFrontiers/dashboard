@@ -8,13 +8,13 @@
 	    <div class="row">
 	    <div class="list-group col-md-4">
 			<a href="#" class="list-group-item " id="healthlink"><i class='fa fa-medkit'></i>Community Health</a>
-			<a href="#" class="list-group-item"><i class='fa fa-graduation-cap'></i>Educational Attainment</a>
+			<a href="#" class="list-group-item" id="edulink"><i class='fa fa-graduation-cap'></i>Educational Attainment</a>
 			<a href="#" class="list-group-item"><i class='fa fa-user-secret'></i>Crime</a>
 
 </div></div>
 	   
 	    
-	    <hr>
+	    
             <div id="content">            
 	    </div>
 	    
@@ -33,12 +33,19 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
         <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
         <script src="js/health.js"></script>
+	<script src="js/education.js"></script>
+	<script src="js/crime.js"></script>
 	<script>
 	    $("#healthlink").click(function() {
 			$('html, body').animate({
-        scrollTop: $("#health").offset().top-65
-    }, 1000);
-});
+				    scrollTop: $("#health").offset().top-65
+			}, 1000);
+	    });
+	    $("#edulink").click(function() {
+			$('html, body').animate({
+				    scrollTop: $("#education").offset().top-65
+			}, 1000);
+	    });
 	</script>
 	
 	

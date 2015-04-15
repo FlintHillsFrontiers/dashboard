@@ -562,298 +562,321 @@
 })(this);
 
 
- var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1cukLFdD9JAOOwt4cvFEBkloXml7Rsyui3U6hgfFQF8Y&output=html';
+//Begin Infographic
 
+console.log('hello.');
+var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1XmNew2D5Og1C1ohZNQAJWi81XyY_KCk5KJzprHJXx8w&output=html';
+var formatAsPercentage = d3.format("%");
 
-function drawMap(data){
+function drawChart(data){
+
+  //Create the div for the infographic and add it to the page.
+  var div = document.createElement("div");
+  var idAtt = document.createAttribute("id");
+  idAtt.value = "education";
+  div.setAttributeNode(idAtt);
+  document.getElementById('content').appendChild(div);
+  document.getElementById('education').innerHTML ="<hr><h4><i class='fa fa-graduation-cap'></i>Flint Hills Educational Attainment by County</h4>";
   
+  //Width and height
+  var w = 850;
+  var h = 500;
+  var padding = 55;
+  var marginBottom = 130;
+  var marginTop = 0;
   
-  var varNames = d3.keys(data[0])
-                    .filter(function(key){return key !=='name';});
-                console.log(varNames);
+  //Legend size
+  var legendRectSize = 18;
+  var legendSpacing = 4;
+  
+  //For formatting as percentage 
+  var formatAsPercentage = d3.format("%");
+  
+  var formatAsNumber = d3.format("04d");
+  
+  //The color scale
+  var color = d3.scale.ordinal()
+    .range(['rgb(240,163,10)','rgb(130,90,44)','rgb(0,80,239)','rgb(162,0,37)','rgb(27,161,226)',
+            'rgb(216,0,115)','rgb(164,196,0)','rgb(106,0,255)','rgb(96,169,23)','rgb(0,138,0)',
+            'rgb(118,96,138)','rgb(109,135,100)','rgb(250,104,0)','rgb(244,114,208)','rgb(229,20,0)',
+            'rgb(122,59,63)','rgb(100,118,135)','rgb(0,171,169)','rgb(170,0,255)','rgb(216,193,0)','rgb(0,0,0)']);
+  
+  var y = d3.scale.linear()
+    .domain([0, 30])
+    .rangeRound([h-marginBottom, marginTop]);
+  
+ //set the x scale for spacing out the groups of bars by county
+  var x = d3.scale.linear()
+                .domain([1980,2010])
+                .rangeRound([padding, w-padding*2]);
+  
+  //Make the y axis
+  var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient('left')
+                .tickFormat(formatAsPercentage);
                 
-          var htmlString = "Select Metric: <select id='metricSelect'>";
-          
-        for (var i=0; i < varNames.length; i++ ) {
-          htmlString = htmlString + "<option value='"+varNames[i]+"'>" +varNames[i]+"</option>";
-        }
-        
-        htmlString = htmlString + "</select>";
-        
-        console.log(htmlString);
-          
-          
-    
-        //For formatting as percentage 
-            var formatAsPercentage = d3.format("%");
-       
-            console.log("health map");
-            var div = document.createElement("div");
-            var idAtt = document.createAttribute("id");
-            idAtt.value = "health";
-            
-            div.setAttributeNode(idAtt);
-            
-            document.getElementById('content').appendChild(div);
-            document.getElementById('health').innerHTML ="<hr><h4><i class='fa fa-medkit'></i>Community Health</h4>" + htmlString +
-                "<!-- Following div sets size of infographic. This layer contains the tooltips; the next div is for the map, which is pulled underneath the tooltips with a negative margin -->\
-                <div style='width: 400px; height: 500px;'>\
-                <div id='tooltip' class='hidden'>\
-                <p><strong><span id='name'>100</span></strong></p>\
-                <p><span id='unemployed'>100</span></p>\
-                <p><span id='rate'>100</span></p>\
-                </div></div>\
-                <!-- Following div contains the map, which is pulled underneath the tooltips with a negative margin -->\
-                <div class='row'>\
-                <div class='map' style='margin-top: -485px; margin-left:15px;'></div>\
-                <div style='margin-left:430px; margin-top:-520px; width:400px;' class='healthTable' id='healthTable'></div></div>";
-            
-            
-            
-          
-              
-            //Set Color Scale, Colors taken from colorbrewer.js, included in the D3 download
-            var color = d3.scale.quantile()
-                .range(['rgb(26,150,65)','rgb(166,217,106)','rgb(253,174,97)','rgb(215,25,28)'])
-                .domain([0.03, .09]);
-              
-         //Width and height
-              var w = 400;
-              var h = 500;
-              
-              //Define Projection and Scale                    
-              var projection = d3.geo.albersUsa()
-                  .scale([7200])
-                  .translate([w/2, h/2.9]);
-           
-              //Define default path generator
-              var path = d3.geo.path()
-                  .projection(projection);
-                  
-              //Create SVG element
-              var svg = d3.select(".map")
-                  .append("svg")
-                  .attr("width", w)
-                  .attr("height", h);
-           
-           
-           var metric = document.getElementById("metricSelect");
-               
-                  
-            var metricSelect = metric.value;
-          
-            
+  //Make the x axis                
+  var xAxis = d3.svg.axis()
+		.scale(x)
+		.orient("bottom")
+                .tickFormat(formatAsNumber);
+  
+  var line = d3.svg.line()
+    .interpolate("cardinal")
+    .x(function(d) { return x(d.label); })
+    .y(function(d) { return y(d.value); });
    
-                d3.json("data/flinthills.geojson", function(json) {
-                    
-            
-                    //Draw Flint Hills Counites
-                    svg.selectAll("path")
-                        .data(json.features)
-                        .enter()
-                        .append("path")
-                        .attr("d", path)
-                        .style("fill", function(d){
-                                metricSelect = metric.value;
-                                for (var i=0; i<data.length; i++){                                  
-                                  if (d.properties.NAME10 == data[i].name) {
-                                      if(data[i][metricSelect] == 'better'){
-                                        return '#91cf60';
-                                      }
-                                      else if(data[i][metricSelect] == 'moderate'){
-                                        return '#ffffbf';
-                                      }
-                                      else if(data[i][metricSelect] == 'worse'){
-                                        return '#fc8d59';
-                                      }
-                                      else{
-                                        return '#eeeeee';
-                                      }
-                                  }
-                                }
-                            
-                        })
-                        .style("stroke","#ddd")
-                        .style("stroke-width","0.5");
-                        
-                        
-                   
-                  
-                function change(){
-                  
-                  svg.selectAll("path")
-                        .data(json.features)
-                        .transition()
-                        .style("fill", function(d){
-                                metricSelect = metric.value;
-                                for (var i=0; i<data.length; i++){                                  
-                                  if (d.properties.NAME10 == data[i].name) {
-                                      if(data[i][metricSelect] == 'better'){
-                                        return '#91cf60';
-                                      }
-                                      else if(data[i][metricSelect] == 'moderate'){
-                                        return '#ffffbf';
-                                      }
-                                      else if(data[i][metricSelect] == 'worse'){
-                                        return '#fc8d59';
-                                      }
-                                      else{
-                                        return '#eeeeee';
-                                      }
-                                  }
-                                }
-                            
-                        })
-                        .style("stroke","#ddd")
-                        .style("stroke-width","0.5");
-                        
-                        
-                    var tableHTML = "<table class='table table-condensed'><thead><tr><th style='width:50px;'></th><th>County</th></tr></thead>";
-        
-                    for(var i=0; i < data.length; i++){
-                      if(data[i][metricSelect] == 'better'){
-                        tableHTML = tableHTML + "<tr><td><i class='fa fa-circle' style='color: #91cf60;'></td><td>" + data[i].name +  " County</td></tr>";
-                      }
-                                      else if(data[i][metricSelect] == 'moderate'){
-                                        tableHTML = tableHTML + "<tr><td><i class='fa fa-square fa-rotate-30' style='color: #ffffbf;'></td><td>" + data[i].name +  " County</td></tr>";
-                                      }
-                                      else if(data[i][metricSelect] == 'worse'){
-                                         tableHTML = tableHTML + "<tr><td><i class='fa fa-square' style='color: #fc8d59;'></td><td>" + data[i].name +  " County</td></tr>";
-                                      }
-                                      else{
-                                        tableHTML = tableHTML + "<tr><td><i class='fa fa-circle-o' style='color: #dddddd;'</td><td>" + data[i].name +  " County</td></tr>";
-                                      }
-         
-                
-                    }
-                    tableHTML= tableHTML + "</table>";
-                    document.getElementById("healthTable").innerHTML=tableHTML; 
-                }
-                
-                //Function to remove the tooltips
-                function removePopovers () {
-                  $('.popover').each(function() {
-                    $(this).remove();
-                  }); 
-                }
-              
-                //Function to show the tooltips
-                function showPopover (d) {
-                  $(this).popover({
-                    title: d.data.Mode,
-                    placement: 'auto right',
-                    container: 'body',
-                    trigger: 'manual',
-                    html : true,
-                    content: function() { 
-                      return "Number of Commuters: " + 
-                      d3.format("1,000")(d.value ? d.value: d.y1 - d.y0); }
-                  });
-                  $(this).popover('show')
-                }
-                change();
-                 //Labels for Flint Hills Counties
-                    svg.selectAll("text")
-                        .data(json.features)
-                        .enter()
-                        .append("text")
-                        .text(function(d){
-                            return d.properties.NAME10;
-                        })
-                        .attr("text-anchor", "middle")
-                        .attr("x", function(d){
-                            return projection([d.properties.INTPTLON10, d.properties.INTPTLAT10])[0];
-                        })
-                        .attr("y", function(d){
-                            return projection([d.properties.INTPTLON10, d.properties.INTPTLAT10])[1];
-                        })
-                        .style("fill","#000")
-                        .attr("text-anchor", "middle")
-                        .style("font-size","8.5px")
-                        .style("text-transform","uppercase");
-                        
-                         d3.selectAll("#metricSelect")
-                  .on("change", change);
-            
-                  //Draw rest of Kansas Counties
-                  d3.json("data/ks-counties.json", function(json) {
-            
-                      //Bind data and create one path per GeoJSON feature
-                      svg.selectAll("path")
-                          .data(json.features)
-                          .enter()
-                          .append("path")
-                          .attr("d", path)
-                          .style("fill","none")
-                          .style("fill-opacity","0")
-                          .style("stroke","#ddd")
-                          .style("stroke-width","0.5");
-                    
-                    //Draw US states Boundaries
-                    d3.json("data/us-states.geojson", function(json) {
-                      //Bind data and create one path per GeoJSON feature
-                      svg.selectAll("path")
-                          .data(json.features)
-                          .enter()
-                          .append("path")
-                          .attr("d", path)
-                          .style("fill","none")
-                          .style("stroke","#999");
-                     
-               
-                    
-                      
-                       
-                      
-                      
-                     
-                    });  //End State Layer
-                  }); //End Kansas Counties Layer
-                  
-               
-                  
-                  
-                }); //End Flint Hills Counties Layer
-    
-                
-                function numberWithCommas(x) {
-                    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                }
-        
-        var tableHTML = "<table class='table table-condensed'><thead><tr><th style='width:50px;'></th><th>County</th></tr></thead>";
-        
-        for(var i=0; i < data.length; i++){
-          if(data[i][metricSelect] == 'better'){
-                                        tableHTML = tableHTML + "<tr><td><i class='fa fa-circle' style='color: #91cf60;'></td><td>" + data[i].name +  " County</td></tr>";
-                                      }
-                                      else if(data[i][metricSelect] == 'moderate'){
-                                        tableHTML = tableHTML + "<tr><td><i class='fa fa-square fa-rotate-30' style='color: #ffffbf;'></td><td>" + data[i].name +  " County</td></tr>";
-                                      }
-                                      else if(data[i][metricSelect] == 'worse'){
-                                         tableHTML = tableHTML + "<tr><td><i class='fa fa-square' style='color: #fc8d59;'></td><td>" + data[i].name +  " County</td></tr>";
-                                      }
-                                      else{
-                                        tableHTML = tableHTML + "<tr><td><i class='fa fa-circle-o' style='color: #eeeeee;'</td><td>" + data[i].name +  " County</td></tr>";
-                                      }
-         
-                
-        }
-        tableHTML= tableHTML + "</table>";
-        document.getElementById("healthTable").innerHTML=tableHTML;        
-                
-               
-
-
+   var svg = d3.select("#education").append("svg")
+          .attr("width",  w + padding*2)
+          .attr("height", h + marginTop  + marginBottom)
+          .append("g")
+          .attr("transform", "translate(" + 0 + "," + 35 + ")");
+  
+  
+  //Group by Year Label
+  var labelVar = 'Year';
+  
+  function key(d) {
+    return d.name;
   }
-            
+  
+  //Grab the labels for the data fields (exclude county names)
+  var varNames = d3.keys(data[0])
+    .filter(function(key){return key !==labelVar && key !== 'Source';});
+  
+  
+    
+  //Set the colors of the data categories
+  color.domain(varNames);
+    
+  var seriesData = varNames.map(function (name){
+    return{
+        name:name,
+        values: data.map(function(d){
+            return{name: name, label: d[labelVar], value: +d[name]};
+        })
+    };
+  });
+  
+  x.domain(d3.extent(data, function(d) { return d.Year; }));
+  
+  y.domain([
+    d3.min(seriesData, function(c) { return d3.min(c.values, function(v) { return v.value; }); }),
+    d3.max(seriesData, function(c) { return d3.max(c.values, function(v) { return v.value; }); })
+  ]);
+           
+  //Draw the Lines
+                
+    var series = svg.selectAll(".series")
+      .data(seriesData, key)
+      .enter().append("g")
+      .attr("class", "series");
+
+  series.append("path")
+    .attr("class", "line")
+    .attr("d", function (d) { return line(d.values); })
+    .style("stroke", function (d) { return color(d.name); })
+    .style("stroke-width", "4px")
+    .style("fill", "none")
+    .attr("id", function(d){ return d.name+"line";})
+    .on("mouseover", function(d) {
+        d3.select(this).style("opacity", "1");
+      })
+    .on("mouseout", function(d) {
+        d3.select(this).style("opacity", ".75");
+      })
+    .style("opacity",".75");
+
+  
+ 
+    
+  //Add the Y axis
+  svg.append('g')
+    .attr("class", "y axis")
+    .attr("transform", "translate(" + padding + ",0)")
+    .call(yAxis)
+    .append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", -45)
+    .attr("dy", ".71em")
+    .style("text-anchor", "end")
+    .text("Percentage of Population with Bachelor's Degree or Higher");
       
+  //Add the x axis
+  svg.append('g')
+    .attr("class", "axis")
+    .attr("transform", "translate(0, " + (h-marginBottom) + ")")
+    .call(xAxis)
+    .selectAll("text")
+    .attr("y", 12)
+    .attr("x", -5)
+    .attr("dy", ".0em")
+    .attr("transform", "rotate(-45)")
+    .style("text-anchor", "end");
+    
+  //Make the legend
+  var j=0;
+  var k=0;
+  
+  var legend = svg.selectAll('.legend')
+    .data(color.domain())
+    .enter()
+    .append('g')
+    .attr('class', 'legend')
+    .attr("transform", function(d, i) {
+        
+        if (i<8) {
+          return "translate(" + (padding + i*100) + "," + (h-marginBottom+65) +")";
+        }
+        else if (i>=8 && i<16) {
+          j=j+1;
+          return "translate(" + (padding + (j-1)*100) + "," + (h-marginBottom+105) +")";
+        }
+        else if (i>=16 && i<24) {
+          k=k+1;
+          return "translate(" + (padding + (k-1)*100) + "," + (h-marginBottom+145) +")";
+        }
+      });
+  
+    
+  //Add the legend rects
+  legend.append('rect')
+    .attr('width', legendRectSize)
+    .attr('height', legendRectSize)
+    .style('fill', color)
+    .style('stroke', color)
+    .on("mouseover", function(d) {
+            d3.select(this).style("opacity", "1");
+            d3.select("#"+d+"line").style("opacity","1");
+            d3.select("#"+d+"line").style("-webkit-filter","drop-shadow( 0px 0px 1px rgba(0,0,0,.4) )");
+            d3.select("#"+d+"line").style("filter","drop-shadow( 0px 0px 1px rgba(0,0,0,.4) )");
+            console.log(d);
+          })
+        .on("mouseout", function(d) {
+            d3.select(this).style("opacity", ".75");
+            d3.select("#"+d+"line").style("opacity",".75");
+            d3.select("#"+d+"line").style("-webkit-filter","drop-shadow( 0px 0px 2px rgba(0,0,0,.0) )");
+            d3.select("#"+d+"line").style("filter","drop-shadow( 0px 0px 2px rgba(0,0,0,.0) )");
+          })
+        .style("opacity",".5");
+  
+  //Add the legend text
+  legend.append('text')                                  
+    .attr('x', legendRectSize + legendSpacing)           
+    .attr('y', legendRectSize - legendSpacing)           
+    .text(function(seriesData) {
+          return seriesData;
+      });
+          
+    
+  
+  d3.selectAll(".legend")
+    .on("click", function(d){
+        var match = false;
+        for (var i=0; i<seriesData.length; i++) {
+          
+          if (d == seriesData[i].name){
+            seriesData.splice(i,1);
+            match= true;
+          }
+                   
+        }
+        
+        if (match == false) {
+          var newDatum;
+          for (var z=0; z < varNames.length; z++){
+            if (varNames[z] == d) {
+              newDatum = {
+                name:varNames[z],
+                values: data.map(function(d){
+                  return{name: varNames[z], label: d[labelVar], value: +d[varNames[z]]};
+                })
+              };
+            };
+          }
+          seriesData.push(newDatum)
+        }
+    
+        svg.selectAll(".series").remove();
+        
+        y.domain([
+    d3.min(seriesData, function(c) { return d3.min(c.values, function(v) { return v.value; }); }),
+    d3.max(seriesData, function(c) { return d3.max(c.values, function(v) { return v.value; }); })
+  ]);
+
+ 
+    svg.selectAll(".y.axis").transition().duration(1500).call(yAxis); 
 
 
+    var newLines = svg.selectAll(".series")
+      .data(seriesData, key).attr("class","series");
+      
+      var linesUpdate = d3.transition(newLines)
+        .attr("d", function (d) { return line(d.values);});
+    
+    newLines.transition().duration(1500).attr("d", function (d) { return line(d.values);}).style("stroke", function (d) { return color(d.name); })
+        .style("stroke-width", "4px")
+        .style("fill", "none"); 
+        
+    newLines.enter()
+        .append("path")
+        .attr("class", "series")
+        .attr("d", function (d) { return line(d.values); })
+        .style("stroke", function (d) { return color(d.name); })
+        .style("stroke-width", "4px")
+        .style("fill", "none")
+        .attr("id", function(d){ return d.name+"line";})
+        .on("mouseover", function(d) {
+            d3.select(this).style("opacity", "1");
+          })
+        .on("mouseout", function(d) {
+            d3.select(this).style("opacity", ".75");
+          })
+        .style("opacity",".75");
+        
+      newLines.exit().remove();
+    });
+        
+    
+
+
+
+
+
+          
+    
+  //Function to remove the tooltips
+  function removePopovers () {
+    $('.popover').each(function() {
+      $(this).remove();
+    }); 
+  }
+
+  //Function to show the tooltips
+  function showPopover (d) {
+    $(this).popover({
+      title: d.label,
+      placement: 'auto top',
+      container: 'body',
+      trigger: 'manual',
+      html : true,
+      content: function() { 
+        return "Percent of Commuters: " + 
+        d3.format(".1%")(d.value ? d.value: d.y1 - d.y0); }
+    });
+    $(this).popover('show')
+  }
+}
+
+
+
+//This function passes the google chart info to the drawChart function and runs the function
 function init() {
               Tabletop.init( { key: public_spreadsheet_url,
-                               callback: drawMap,
+                               callback: drawChart,
                                simpleSheet: true } )
-}
-            
-          
+            }
+
+//do the stuff.      
 init();

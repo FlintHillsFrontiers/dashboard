@@ -562,17 +562,17 @@
 })(this);
 
 
- var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1cukLFdD9JAOOwt4cvFEBkloXml7Rsyui3U6hgfFQF8Y&output=html';
+ var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1Dv6XvdDBfdjOtG2nYQ25NVU0OgOrdutRecZSoX9j4Zs&output=html';
 
 
-function drawMap(data){
+function drawCrimeMap(data){
   
   
   var varNames = d3.keys(data[0])
                     .filter(function(key){return key !=='name';});
                 console.log(varNames);
                 
-          var htmlString = "Select Metric: <select id='metricSelect'>";
+          var htmlString = "Select Metric: <select id='crimeMetricSelect'>";
           
         for (var i=0; i < varNames.length; i++ ) {
           htmlString = htmlString + "<option value='"+varNames[i]+"'>" +varNames[i]+"</option>";
@@ -587,15 +587,15 @@ function drawMap(data){
         //For formatting as percentage 
             var formatAsPercentage = d3.format("%");
        
-            console.log("health map");
+            console.log("crime map");
             var div = document.createElement("div");
             var idAtt = document.createAttribute("id");
-            idAtt.value = "health";
+            idAtt.value = "crime";
             
             div.setAttributeNode(idAtt);
             
             document.getElementById('content').appendChild(div);
-            document.getElementById('health').innerHTML ="<hr><h4><i class='fa fa-medkit'></i>Community Health</h4>" + htmlString +
+            document.getElementById('crime').innerHTML ="<hr><h4><i class='fa fa-user-secret'></i>Crime</h4>" + htmlString +
                 "<!-- Following div sets size of infographic. This layer contains the tooltips; the next div is for the map, which is pulled underneath the tooltips with a negative margin -->\
                 <div style='width: 400px; height: 500px;'>\
                 <div id='tooltip' class='hidden'>\
@@ -605,8 +605,8 @@ function drawMap(data){
                 </div></div>\
                 <!-- Following div contains the map, which is pulled underneath the tooltips with a negative margin -->\
                 <div class='row'>\
-                <div class='map' style='margin-top: -485px; margin-left:15px;'></div>\
-                <div style='margin-left:430px; margin-top:-520px; width:400px;' class='healthTable' id='healthTable'></div></div>";
+                <div class='crimemap' style='margin-top: -485px; margin-left:15px;'></div>\
+                <div style='margin-left:430px; margin-top:-520px; width:400px;' class='crimeTable' id='crimeTable'></div></div>";
             
             
             
@@ -631,16 +631,16 @@ function drawMap(data){
                   .projection(projection);
                   
               //Create SVG element
-              var svg = d3.select(".map")
+              var svg = d3.select(".crimemap")
                   .append("svg")
                   .attr("width", w)
                   .attr("height", h);
            
            
-           var metric = document.getElementById("metricSelect");
+           var crimeMetric = document.getElementById("crimeMetricSelect");
                
                   
-            var metricSelect = metric.value;
+            var crimeMetricSelect = crimeMetric.value;
           
             
    
@@ -654,16 +654,16 @@ function drawMap(data){
                         .append("path")
                         .attr("d", path)
                         .style("fill", function(d){
-                                metricSelect = metric.value;
+                                crimeMetricSelect = crimeMetric.value;
                                 for (var i=0; i<data.length; i++){                                  
                                   if (d.properties.NAME10 == data[i].name) {
-                                      if(data[i][metricSelect] == 'better'){
+                                      if(data[i][crimeMetricSelect] == 'better'){
                                         return '#91cf60';
                                       }
-                                      else if(data[i][metricSelect] == 'moderate'){
+                                      else if(data[i][crimeMetricSelect] == 'moderate'){
                                         return '#ffffbf';
                                       }
-                                      else if(data[i][metricSelect] == 'worse'){
+                                      else if(data[i][crimeMetricSelect] == 'worse'){
                                         return '#fc8d59';
                                       }
                                       else{
@@ -685,16 +685,16 @@ function drawMap(data){
                         .data(json.features)
                         .transition()
                         .style("fill", function(d){
-                                metricSelect = metric.value;
+                                crimeMetricSelect = crimeMetric.value;
                                 for (var i=0; i<data.length; i++){                                  
                                   if (d.properties.NAME10 == data[i].name) {
-                                      if(data[i][metricSelect] == 'better'){
+                                      if(data[i][crimeMetricSelect] == 'better'){
                                         return '#91cf60';
                                       }
-                                      else if(data[i][metricSelect] == 'moderate'){
+                                      else if(data[i][crimeMetricSelect] == 'moderate'){
                                         return '#ffffbf';
                                       }
-                                      else if(data[i][metricSelect] == 'worse'){
+                                      else if(data[i][crimeMetricSelect] == 'worse'){
                                         return '#fc8d59';
                                       }
                                       else{
@@ -711,13 +711,13 @@ function drawMap(data){
                     var tableHTML = "<table class='table table-condensed'><thead><tr><th style='width:50px;'></th><th>County</th></tr></thead>";
         
                     for(var i=0; i < data.length; i++){
-                      if(data[i][metricSelect] == 'better'){
+                      if(data[i][crimeMetricSelect] == 'better'){
                         tableHTML = tableHTML + "<tr><td><i class='fa fa-circle' style='color: #91cf60;'></td><td>" + data[i].name +  " County</td></tr>";
                       }
-                                      else if(data[i][metricSelect] == 'moderate'){
+                                      else if(data[i][crimeMetricSelect] == 'moderate'){
                                         tableHTML = tableHTML + "<tr><td><i class='fa fa-square fa-rotate-30' style='color: #ffffbf;'></td><td>" + data[i].name +  " County</td></tr>";
                                       }
-                                      else if(data[i][metricSelect] == 'worse'){
+                                      else if(data[i][crimeMetricSelect] == 'worse'){
                                          tableHTML = tableHTML + "<tr><td><i class='fa fa-square' style='color: #fc8d59;'></td><td>" + data[i].name +  " County</td></tr>";
                                       }
                                       else{
@@ -727,7 +727,7 @@ function drawMap(data){
                 
                     }
                     tableHTML= tableHTML + "</table>";
-                    document.getElementById("healthTable").innerHTML=tableHTML; 
+                    document.getElementById("crimeTable").innerHTML=tableHTML; 
                 }
                 
                 //Function to remove the tooltips
@@ -823,13 +823,13 @@ function drawMap(data){
         var tableHTML = "<table class='table table-condensed'><thead><tr><th style='width:50px;'></th><th>County</th></tr></thead>";
         
         for(var i=0; i < data.length; i++){
-          if(data[i][metricSelect] == 'better'){
+          if(data[i][crimeMetricSelect] == 'better'){
                                         tableHTML = tableHTML + "<tr><td><i class='fa fa-circle' style='color: #91cf60;'></td><td>" + data[i].name +  " County</td></tr>";
                                       }
-                                      else if(data[i][metricSelect] == 'moderate'){
+                                      else if(data[i][crimeMetricSelect] == 'moderate'){
                                         tableHTML = tableHTML + "<tr><td><i class='fa fa-square fa-rotate-30' style='color: #ffffbf;'></td><td>" + data[i].name +  " County</td></tr>";
                                       }
-                                      else if(data[i][metricSelect] == 'worse'){
+                                      else if(data[i][crimeMetricSelect] == 'worse'){
                                          tableHTML = tableHTML + "<tr><td><i class='fa fa-square' style='color: #fc8d59;'></td><td>" + data[i].name +  " County</td></tr>";
                                       }
                                       else{
@@ -839,7 +839,7 @@ function drawMap(data){
                 
         }
         tableHTML= tableHTML + "</table>";
-        document.getElementById("healthTable").innerHTML=tableHTML;        
+        document.getElementById("crimeTable").innerHTML=tableHTML;        
                 
                
 
@@ -851,7 +851,7 @@ function drawMap(data){
 
 function init() {
               Tabletop.init( { key: public_spreadsheet_url,
-                               callback: drawMap,
+                               callback: drawCrimeMap,
                                simpleSheet: true } )
 }
             

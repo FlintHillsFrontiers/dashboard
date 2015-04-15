@@ -13,7 +13,7 @@
 </div></div>
 	    
 	    <hr>
-	    <h3 id="commuteanchor"><i class='fa fa-car'></i>Commuting</h3>
+	    <h4 id="commuteanchor"><i class='fa fa-car'></i>Commuting</h4>
             <div class="btn-group" role="group" aria-label="...">
                 <button type="button" class="btn btn-default" id="bar"><i class="fa fa-bar-chart"></i>% Commuting 30, 45, & 60+ min.</button>
                 <button type="button" class="btn btn-default" id="line"><i class="fa fa-line-chart"></i>Avg. Commute Time</button>
