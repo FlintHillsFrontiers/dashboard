@@ -669,7 +669,7 @@ function drawCrimeMap(data){
           for (var i=0; i<data.length; i++){
             if (d.properties.NAME10 == data[i].Label) {
               if (data[i][crimeMetricSelect] == '') {
-                return '#dddddd';
+                return '#eeeeee';
               }
               else{
                  return color(data[i][crimeMetricSelect]);
@@ -703,7 +703,7 @@ function drawCrimeMap(data){
           for (var i=0; i<data.length; i++){
             if (d.properties.NAME10 == data[i].Label) {
               if (data[i][crimeMetricSelect] == '') {
-                return '#dddddd';
+                return '#eeeeee';
               }
               else{
                  return color(data[i][crimeMetricSelect]);

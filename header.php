@@ -10,7 +10,7 @@
         
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
             <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-		<link rel="stylesheet" href="http://zachflanders.com/FlintHills/dashboard/dashboard.css"></link>
+	    <link rel="stylesheet" href="dashboard/dashboard.css"></link>
             <link rel="stylesheet" href="css/example.css">
             <style type="text/css">
 			
@@ -65,6 +65,10 @@
 				stroke: black;
 				stroke-width: 2px;
 				fill: none;
+			}
+			.background{
+				    background: url(img/konza.jpg)  no-repeat center center fixed;
+				    
 			}
                          
 

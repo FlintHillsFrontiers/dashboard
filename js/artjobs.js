@@ -565,17 +565,20 @@
 //Begin Infographic
 
 console.log('hello.');
-var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=16CDikeIJW2T5AM4V_PgVLQpv1XPfTODz8eVLvAOXeGk&output=html';
+var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1A38RtZl2NSQgNyFGbn1M2qD1EPbxwWzGI9r-XDWgmU0&output=html';
 
 function drawChart(data){
 
   //Create the div for the infographic and add it to the page.
   var div = document.createElement("div");
   var idAtt = document.createAttribute("id");
+  var classAtt = document.createAttribute("class");
   idAtt.value = "commute2";
   div.setAttributeNode(idAtt);
+
+  div.setAttributeNode(classAtt);
   document.getElementById('content').appendChild(div);
-  document.getElementById('commute2').innerHTML ="<br><br><br><hr><h4>Flint Hills Employment by Industry</h4>";
+  document.getElementById('commute2').innerHTML ="<hr><h4><i class='fa fa-paint-brush'></i>Jobs in the Arts, Entertainment, Recreation, and Visitor Industries</h4>";
   
   //Width and height
   var w = 850;

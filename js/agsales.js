@@ -562,311 +562,275 @@
 })(this);
 
 
-//Begin Infographic
+var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1WeJ-6lM2FieBEQO3lBmVbVQW9Qc3nD9ydGvYbfFjR8E&output=html';
 
-console.log('hello.');
-var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=16CDikeIJW2T5AM4V_PgVLQpv1XPfTODz8eVLvAOXeGk&output=html';
 
-function drawChart(data){
-
-  //Create the div for the infographic and add it to the page.
-  var div = document.createElement("div");
-  var idAtt = document.createAttribute("id");
-  idAtt.value = "commute2";
-  div.setAttributeNode(idAtt);
-  document.getElementById('content').appendChild(div);
-  document.getElementById('commute2').innerHTML ="<br><br><br><hr><h4>Flint Hills Employment by Industry</h4>";
+function drawAgsalesMap(data){
+ 
+  console.log("ag map");
   
-  //Width and height
-  var w = 850;
-  var h = 500;
-  var padding = 65;
-  var marginBottom = 130;
-  var marginTop = 0;
-  
-  //Legend size
-  var legendRectSize = 18;
-  var legendSpacing = 4;
+  //Set the names of the fields and filter out the label field
+  var varNames = d3.keys(data[0])
+    .filter(function(key){return key !=='Label';});
+ 
+  //Create the HTML for the dropdown menu with the fields
+  var htmlString = "Select Metric: <select id='agsalesMetricSelect'>";
+  for (var i=0; i < varNames.length; i++ ) {
+    htmlString = htmlString + "<option value='"+varNames[i]+"'>" +varNames[i]+"</option>";
+  }
+  htmlString = htmlString + "</select>";
   
   //For formatting as percentage 
   var formatAsPercentage = d3.format("%");
+  var formatDecimal = d3.format(',');
+
   
-  var formatAsNumber = d3.format("04d");
-  
-  //The color scale
-  var color = d3.scale.ordinal()
-    .range(['rgb(240,163,10)','rgb(130,90,44)','rgb(0,80,239)','rgb(162,0,37)','rgb(27,161,226)',
-            'rgb(216,0,115)','rgb(164,196,0)','rgb(106,0,255)','rgb(96,169,23)','rgb(0,138,0)',
-            'rgb(118,96,138)','rgb(109,135,100)','rgb(250,104,0)','rgb(244,114,208)','rgb(229,20,0)',
-            'rgb(122,59,63)','rgb(100,118,135)','rgb(0,171,169)','rgb(170,0,255)','rgb(216,193,0)','rgb(0,0,0)']);
-    
-  var y = d3.scale.linear()
-    .domain([0, 30])
-    .rangeRound([h-marginBottom, marginTop]);
-  
- //set the x scale for spacing out the groups of bars by county
-  var x = d3.scale.linear()
-                .domain([1980,2010])
-                .rangeRound([padding, w-padding*2]);
-  
-  //Make the y axis
-  var yAxis = d3.svg.axis()
-                .scale(y)
-                .orient('left');
-                
-  //Make the x axis                
-  var xAxis = d3.svg.axis()
-		.scale(x)
-		.orient("bottom")
-                .tickFormat(formatAsNumber);
-  
-  var line = d3.svg.line()
-    .interpolate("cardinal")
-    .x(function(d) { return x(d.label); })
-    .y(function(d) { return y(d.value); });
-   
-   var svg = d3.select("#commute2").append("svg")
-          .attr("width",  w + padding*2)
-          .attr("height", h + marginTop  + marginBottom)
-          .append("g")
-          .attr("transform", "translate(" + 0 + "," + 35 + ")");
+  //Create the div for the infographic and add it to the document
+  var div = document.createElement("div");
+  var idAtt = document.createAttribute("id");
+  idAtt.value = "agsales";
+  div.setAttributeNode(idAtt);
+  document.getElementById('content').appendChild(div);
+  document.getElementById('agsales').innerHTML ="<hr><h4><span class='glyphicon glyphicon-grain' aria-hidden='true'></span>Agricultural Sales</h4>" + htmlString +
+    "<!-- Following div sets size of infographic. This layer contains the tooltips; the next div is for the map, which is pulled underneath the tooltips with a negative margin -->\
+    <div style='width: 400px; height: 500px;'>\
+    <div id='tooltip' class='hidden'>\
+    <p><strong><span id='name'>100</span></strong></p>\
+    <p><span id='unemployed'>100</span></p>\
+    <p><span id='rate'>100</span></p>\
+    </div></div>\
+    <!-- Following div contains the map, which is pulled underneath the tooltips with a negative margin -->\
+    <div class='row'>\
+    <div class='agsalesmap' style='margin-top: -485px; margin-left:15px;'></div>\
+    <div style='margin-left:430px; margin-top:-520px; width:400px;' class='agsalesTable' id='agsalesTable'></div></div>";
+ 
+  //Set Color Scale, Colors taken from colorbrewer.js, included in the D3 download
   
   
-  //Group by Year Label
-  var labelVar = 'Year';
+  //Width and height of Map
+  var w = 400;
+  var h = 500;
+ 
+  //Define Projection and Scale                    
+  var projection = d3.geo.albersUsa()
+    .scale([7200])
+    .translate([w/2, h/2.9]);
   
-  //Grab the labels for the data fields (exclude county names)
-  var varNames = d3.keys(data[0])
-    .filter(function(key){return key !==labelVar && key !== 'Source';});
+  //Define default path generator
+  var path = d3.geo.path()
+    .projection(projection);
   
+  //Create SVG element
+  var svg = d3.select(".agsalesmap")
+    .append("svg")
+    .attr("width", w)
+    .attr("height", h);
   
-    
-  //Set the colors of the data categories
-  color.domain(varNames);
-    
-  var seriesData = varNames.map(function (name){
-    return{
-        name:name,
-        values: data.map(function(d){
-            return{name: name, label: d[labelVar], value: +d[name]};
-        })
-    };
+  //Get the selected metric from the drop down menu
+  var agsalesMetric = document.getElementById("agsalesMetricSelect");
+  var agsalesMetricSelect = agsalesMetric.value;
+  
+  var maximum = d3.max(data, function(d){
+      return d[agsalesMetricSelect];
   });
   
-  x.domain(d3.extent(data, function(d) { return d.Year; }));
+  var minimum = d3.min(data, function(d){
+      return d[agsalesMetricSelect];
+  });
   
-  y.domain([
-    d3.min(seriesData, function(c) { return d3.min(c.values, function(v) { return v.value; }); }),
-    d3.max(seriesData, function(c) { return d3.max(c.values, function(v) { return v.value; }); })
-  ]);
-           
-  //Draw the Lines
-                
-    var series = svg.selectAll(".series")
-      .data(seriesData)
-      .enter().append("g")
-      .attr("class", "series");
-
-  series.append("path")
-    .attr("class", "line")
-    .attr("d", function (d) { return line(d.values); })
-    .style("stroke", function (d) { return color(d.name); })
-    .style("stroke-width", "4px")
-    .style("fill", "none")
-    .attr("id", function(d){ return d.name+"line";})
-    .on("mouseover", function(d) {
-        d3.select(this).style("opacity", "1");
-      })
-    .on("mouseout", function(d) {
-        d3.select(this).style("opacity", ".75");
-      })
-    .style("opacity",".75");
-
+  console.log(data[2]);
   
+  var color = d3.scale.quantile()
+    .range(['rgb(237,248,251)','rgb(178,226,226)','rgb(102,194,164)','rgb(44,162,95)','rgb(0,109,44)'])
+    .domain([minimum, maximum]);
  
+
+  //Bring in the Flint Hill county geojson file
+  d3.json("data/flinthills.geojson", function(json) {
+   
+    //Draw Flint Hills Counites
+    svg.selectAll("path")
+      .data(json.features)
+      .enter()
+      .append("path")
+      .attr("d", path)
+      // Set the Fill according to the value of the metric
+      .style("fill", function(d){
+          agsalesMetricSelect = agsalesMetric.value;
+          var array =[];
+          for (var i=0; i<data.length; i++){                                  
+            array.push(data[i][agsalesMetricSelect]);
+          }
+          var maximum = Math.max.apply(Math, array);
+          var minimum = Math.min.apply(Math, array);
+          color = d3.scale.quantile()
+            .range(['rgb(237,248,251)','rgb(178,226,226)','rgb(102,194,164)','rgb(44,162,95)','rgb(0,109,44)'])
+            .domain([minimum, maximum]);
+          for (var i=0; i<data.length; i++){
+            if (d.properties.NAME10 == data[i].Label) {
+              if (data[i][agsalesMetricSelect] == '') {
+                return '#eeeeee';
+              }
+              else{
+                 return color(data[i][agsalesMetricSelect]);
+              }
+            } 
+          }
+        })
+      .style("stroke","#ddd")
+      .style("stroke-width","0.5");
     
-  //Add the Y axis
-  svg.append('g')
-    .attr("class", "y axis")
-    .attr("transform", "translate(" + padding + ",0)")
-    .call(yAxis)
-    .append("text")
-    .attr("transform", "rotate(-90)")
-    .attr("y", -65)
-    .attr("dy", ".71em")
-    .style("text-anchor", "end")
-    .text("Number of Jobs");
+    //function for changing the colors of the counties
+    function change(){
       
-  //Add the x axis
-  svg.append('g')
-    .attr("class", "axis")
-    .attr("transform", "translate(0, " + (h-marginBottom) + ")")
-    .call(xAxis)
-    .selectAll("text")
-    .attr("y", 12)
-    .attr("x", -5)
-    .attr("dy", ".0em")
-    .attr("transform", "rotate(-45)")
-    .style("text-anchor", "end");
-    
-  //Make the legend
-  var j=0;
-  var k=0;
-  
-  var legend = svg.selectAll('.legend')
-    .data(color.domain())
-    .enter()
-    .append('g')
-    .attr('class', 'legend')
-    .attr("transform", function(d, i) {
-        
-        if (i<8) {
-          return "translate(" + (padding + i*100) + "," + (h-marginBottom+65) +")";
-        }
-        else if (i>=8 && i<16) {
-          j=j+1;
-          return "translate(" + (padding + (j-1)*100) + "," + (h-marginBottom+105) +")";
-        }
-        else if (i>=16 && i<24) {
-          k=k+1;
-          return "translate(" + (padding + (k-1)*100) + "," + (h-marginBottom+145) +")";
-        }
-      });
-  
-    
-  //Add the legend rects
-  legend.append('rect')
-    .attr('width', legendRectSize)
-    .attr('height', legendRectSize)
-    .style('fill', color)
-    .style('stroke', color)
-    .on("mouseover", function(d) {
-            d3.select(this).style("opacity", "1");
-            d3.select("#"+d+"line").style("opacity","1");
-            d3.select("#"+d+"line").style("-webkit-filter","drop-shadow( 0px 0px 1px rgba(0,0,0,.4) )");
-            d3.select("#"+d+"line").style("filter","drop-shadow( 0px 0px 1px rgba(0,0,0,.4) )");
-            console.log(d);
-          })
-        .on("mouseout", function(d) {
-            d3.select(this).style("opacity", ".75");
-            d3.select("#"+d+"line").style("opacity",".75");
-            d3.select("#"+d+"line").style("-webkit-filter","drop-shadow( 0px 0px 2px rgba(0,0,0,.0) )");
-            d3.select("#"+d+"line").style("filter","drop-shadow( 0px 0px 2px rgba(0,0,0,.0) )");
-          })
-        .style("opacity",".6");
-  
-  //Add the legend text
-  legend.append('text')                                  
-    .attr('x', legendRectSize + legendSpacing)           
-    .attr('y', legendRectSize - legendSpacing)           
-    .text(function(seriesData) {
-          return seriesData;
-      });
-          
-    
-  
-  d3.selectAll(".legend")
-    .on("click", function(d){
-        var match = false;
-        for (var i=0; i<seriesData.length; i++) {
-          
-          if (d == seriesData[i].name){
-            seriesData.splice(i,1);
-            match= true;
+      
+      
+      //Redraw the counties
+      svg.selectAll("path")
+        .data(json.features)
+        .transition()
+        .style("fill", function(d){
+          agsalesMetricSelect = agsalesMetric.value;
+          var array =[];
+          for (var i=0; i<data.length; i++){                                  
+            array.push(data[i][agsalesMetricSelect]);
           }
-                   
-        }
-        
-        if (match == false) {
-          var newDatum;
-          for (var z=0; z < varNames.length; z++){
-            if (varNames[z] == d) {
-              newDatum = {
-                name:varNames[z],
-                values: data.map(function(d){
-                  return{name: varNames[z], label: d[labelVar], value: +d[varNames[z]]};
-                })
-              };
-            };
+          var maximum = Math.max.apply(Math, array);
+          var minimum = Math.min.apply(Math, array);
+          color = d3.scale.quantile()
+            .range(['rgb(237,248,251)','rgb(178,226,226)','rgb(102,194,164)','rgb(44,162,95)','rgb(0,109,44)'])
+            .domain([minimum, maximum]);
+          for (var i=0; i<data.length; i++){
+            if (d.properties.NAME10 == data[i].Label) {
+              if (data[i][agsalesMetricSelect] == '') {
+                return '#eeeeee';
+              }
+              else{
+                 return color(data[i][agsalesMetricSelect]);
+              }
+            } 
           }
-          seriesData.push(newDatum)
+        })
+        .style("stroke","#ddd")
+        .style("stroke-width","0.5");
+      
+      //Create the HTML string for the table
+      var tableHTML = "<table class='table table-condensed'><thead><tr><th>County</th><th style='text-align:right;'>Sales</th></tr></thead>";
+      var tableData;
+      for(var i=0; i < data.length; i++){
+        if (data[i][agsalesMetricSelect] == '') {
+          tableData = "-";
         }
-    
-        svg.selectAll(".series").remove();
+        else{
+          tableData = data[i][agsalesMetricSelect];
+        }
+        if (tableData == "-") {
+          tableHTML = tableHTML + "<tr><td>"+data[i].Label+" County</td><td style='text-align:right;'>" + tableData +  "</td></tr>";
+        }
+        else if (tableData > 1) {
+          tableHTML = tableHTML + "<tr><td>"+data[i].Label+" County</td><td style='text-align:right;'>" + formatDecimal(tableData,0) +  "</td></tr>";
+        }
+        else{
+          tableHTML = tableHTML + "<tr><td>"+data[i].Label+" County</td><td style='text-align:right;'>" + formatAsPercentage(tableData) +  "</td></tr>";
+        }
         
-        y.domain([
-    d3.min(seriesData, function(c) { return d3.min(c.values, function(v) { return v.value; }); }),
-    d3.max(seriesData, function(c) { return d3.max(c.values, function(v) { return v.value; }); })
-  ]);
-
- 
-    svg.selectAll(".y.axis").transition().duration(1500).call(yAxis); 
-
-
-    var newLines = svg.selectAll(".series")
-    .data(seriesData).attr("class","series");
+      }
+      tableHTML= tableHTML + "</table>";
+      
+      //Add html table
+      document.getElementById("agsalesTable").innerHTML=tableHTML; 
+    }//end of change function
     
-    newLines.transition().duration(1500).attr("d", function (d) { return line(d.values).style("stroke", function (d) { return color(d.name); })
-        .style("stroke-width", "4px")
-        .style("fill", "none"); });
-        
-        newLines.enter()
+    //Function to remove the tooltips
+    function removePopovers () {
+      $('.popover').each(function() {
+        $(this).remove();
+      }); 
+    }
+    
+    //Function to show the tooltips
+    function showPopover (d) {
+      $(this).popover({
+        title: d.data.Mode,
+        placement: 'auto right',
+        container: 'body',
+        trigger: 'manual',
+        html : true,
+        content: function() { 
+          return "Number of Commuters: " + 
+          d3.format("1,000")(d.value ? d.value: d.y1 - d.y0); }
+      });
+      $(this).popover('show')
+    }
+    
+    //Run the change function for the first time
+    change();
+    
+    //Labels for Flint Hills Counties
+    svg.selectAll("text")
+      .data(json.features)
+      .enter()
+      .append("text")
+      .text(function(d){
+          return d.properties.NAME10;
+      })
+      .attr("text-anchor", "middle")
+      .attr("x", function(d){
+          return projection([d.properties.INTPTLON10, d.properties.INTPTLAT10])[0];
+      })
+      .attr("y", function(d){
+          return projection([d.properties.INTPTLON10, d.properties.INTPTLAT10])[1];
+      })
+      .style("fill","#000")
+      .attr("text-anchor", "middle")
+      .style("font-size","8.5px")
+      .style("text-transform","uppercase");
+    
+    //Listen for a change in the drop down menu and run the change function if it happens
+    d3.selectAll("#agsalesMetricSelect")
+      .on("change", change);
+   
+    //Draw rest of Kansas Counties
+    d3.json("data/ks-counties.json", function(json) {
+      
+      //Bind data and create one path per GeoJSON feature
+      svg.selectAll("path")
+        .data(json.features)
+        .enter()
         .append("path")
-        .attr("class", "series")
-        .attr("d", function (d) { return line(d.values); })
-        .style("stroke", function (d) { return color(d.name); })
-        .style("stroke-width", "4px")
-        .style("fill", "none")
-        .attr("id", function(d){ return d.name+"line";})
-        .on("mouseover", function(d) {
-            d3.select(this).style("opacity", "1");
-          })
-        .on("mouseout", function(d) {
-            d3.select(this).style("opacity", ".75");
-          })
-        .style("opacity",".75");
-        
-      newLines.exit().remove();
-        
-    
-
+        .attr("d", path)
+        .style("fill","none")
+        .style("fill-opacity","0")
+        .style("stroke","#ddd")
+        .style("stroke-width","0.5");
       
-});
-
-
-          
-    
-  //Function to remove the tooltips
-  function removePopovers () {
-    $('.popover').each(function() {
-      $(this).remove();
-    }); 
+      //Draw US states Boundaries
+      d3.json("data/us-states.geojson", function(json) {
+        
+        //Bind data and create one path per GeoJSON feature
+        svg.selectAll("path")
+          .data(json.features)
+          .enter()
+          .append("path")
+          .attr("d", path)
+          .style("fill","none")
+          .style("stroke","#999");
+        
+      });  //End State Layer
+    }); //End Kansas Counties Layer
+  }); //End Flint Hills Counties Layer
+  
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
+  
+         
 
-  //Function to show the tooltips
-  function showPopover (d) {
-    $(this).popover({
-      title: d.label,
-      placement: 'auto top',
-      container: 'body',
-      trigger: 'manual',
-      html : true,
-      content: function() { 
-        return "Percent of Commuters: " + 
-        d3.format(".1%")(d.value ? d.value: d.y1 - d.y0); }
-    });
-    $(this).popover('show')
-  }
-}
+}//End of drawAgsalesMapfunction
 
-
-
-//This function passes the google chart info to the drawChart function and runs the function
 function init() {
-              Tabletop.init( { key: public_spreadsheet_url,
-                               callback: drawChart,
-                               simpleSheet: true } )
-            }
-
-//do the stuff.      
+  Tabletop.init( { key: public_spreadsheet_url,
+    callback: drawAgsalesMap,
+    simpleSheet: true } )
+}
 init();

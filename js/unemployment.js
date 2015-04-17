@@ -577,11 +577,8 @@ function drawInfographic(metric){
             console.log("unemployment Infographic");
             var div = document.createElement("div");
             var idAtt = document.createAttribute("id");
-            var classAtt = document.createAttribute("class");
             idAtt.value = "unemployment";
-            classAtt.value = "hidden";
             div.setAttributeNode(idAtt);
-            div.setAttributeNode(classAtt);
             document.getElementById('content').appendChild(div);
             document.getElementById('unemployment').innerHTML ="<h3 class='panel-title'>Flint Hills Unemployment by County</h3>\
                 <svg style='position: relative; top: 0px; left: 400px;' class='unemployment' id='unemployment'></svg>\

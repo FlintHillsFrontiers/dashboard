@@ -5,15 +5,13 @@
             <h2>Cultural Systems</h2>
             
             <h3>Metrics</h3>
-	    <ul><li>...</li></ul>
-	    <hr>
-	    <h3>...</h3>
-            <div class="btn-group" role="group" aria-label="...">
-                <button type="button" class="btn btn-default" id="bar"><i class="fa fa-bar-chart"></i>...</button>
-                <button type="button" class="btn btn-default" id="line"><i class="fa fa-line-chart"></i>...</button>
-                <button type="button" class="btn btn-default" id="pie"><i class="fa fa-pie-chart"></i>...</button>
-            </div>
-	    <hr>
+	    <div class="row">
+	    <div class="list-group col-md-4">
+			<a href="#" class="list-group-item " id="commutelink"><i class='fa fa-paint-brush'></i>Cultural Jobs</a>
+	    </div>
+	    </div>
+	    
+	    
             <div id="content">            
 	    </div>
 	    
@@ -31,6 +29,7 @@
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
         <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<script src="js/artjobs.js"></script>
 	<script>$(document).ready(function(){	
 			$("#cultural-menu").addClass('active');
 	    });</script>
