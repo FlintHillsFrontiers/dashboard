@@ -15,7 +15,8 @@ function drawEmploymentChart(data) {
     //Width and height
     var w = 850;
     var h = 500;
-    var padding = 65;
+    var marginLeft = 65;
+    var marginRight = 0;
     var marginBottom = 50;
     var marginTop = 0;
    
@@ -36,13 +37,13 @@ function drawEmploymentChart(data) {
 
     //Create x scale and set domain
     var x = d3.scale.linear()
-        .rangeRound([padding, w - padding * 2]);
+        .rangeRound([marginLeft, w - marginRight]);
 
     //Make the y axis
     var yAxis = d3.svg.axis()
         .scale(y)
         .orient('left')
-        .tickSize(-w + padding * 3)
+        .tickSize(-w + marginLeft)
         .tickSubdivide(true);
 
     //Make the x axis                
@@ -63,7 +64,7 @@ function drawEmploymentChart(data) {
 
     //Create the svg variable
     var svg = d3.select("#employment").append("svg")
-        .attr("width", w + padding * 2)
+        .attr("width", w + marginLeft+marginRight)
         .attr("height", h + marginTop + marginBottom)
         .append("g")
         .attr("transform", "translate(" + 0 + "," + 35 + ")");
@@ -120,7 +121,7 @@ function drawEmploymentChart(data) {
     //Add the Y axis
     svg.append('g')
         .attr("class", "y axis")
-        .attr("transform", "translate(" + padding + ",0)")
+        .attr("transform", "translate(" + marginLeft + ",0)")
         .call(yAxis)
         .selectAll("text")
         .attr("x", -8);
@@ -188,7 +189,7 @@ function drawEmploymentChart(data) {
         .style("text-anchor", "end");
 
     //Create the legend div
-    var legendHtml = "<div style='width:" + (w) + "px;'>";
+    var legendHtml = "<div style='width:" + (w+marginLeft+marginRight) + "px;'>";
     
     //Size of Squares in legend buttons
     var legendRectSize = 9;
@@ -340,7 +341,6 @@ function drawEmploymentChart(data) {
             .enter().append("g").append("circle")
             .attr("class", "point")
             .attr("cx", function (d) {
-            console.log(d);
             return x(d.label);
         })
             .attr("cy", function (d) {

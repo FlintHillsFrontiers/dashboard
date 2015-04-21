@@ -1,31 +1,27 @@
 console.log('hello.');
 var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1EhvozhiQx7S9c5ske2pJJriLdtuaN7Mmq8MsdjhvKXQ&output=html';
 
-function drawCommuteLineChart(data) {
+
+//Function to draw the chart
+function drawAvgCommuteChart(data) {
 
     //Create the div for the infographic and add it to the page.
     var div = document.createElement("div");
     var idAtt = document.createAttribute("id");
-    var classAtt = document.createAttribute("class");
-    idAtt.value = "commute2";
+    idAtt.value = "avgCommute";
     div.setAttributeNode(idAtt);
-    classAtt.value = "hidden";
-    div.setAttributeNode(classAtt);
     document.getElementById('content').appendChild(div);
-    document.getElementById('commute2').innerHTML = "<h5>Average Commute Time by County</h5>";
+    document.getElementById('avgCommute').innerHTML = "<h5>Flint Hills Average Commute Time by County</h5>";
 
     //Width and height
     var w = 850;
     var h = 500;
-    var padding = 35;
-    var marginBottom = 130;
+    var marginLeft = 65;
+    var marginRight = 0;
+    var marginBottom = 50;
     var marginTop = 0;
-
-    //Legend size
-    var legendRectSize = 18;
-    var legendSpacing = 4;
-
-    //Formatting help
+   
+    //Formatting help 
     var formatAsPercentage = d3.format("%");
     var formatAsNumber = d3.format("04d");
 
@@ -36,19 +32,20 @@ function drawCommuteLineChart(data) {
         'rgb(118,96,138)', 'rgb(109,135,100)', 'rgb(250,104,0)', 'rgb(244,114,208)', 'rgb(229,20,0)',
         'rgb(122,59,63)', 'rgb(100,118,135)', 'rgb(0,171,169)', 'rgb(170,0,255)', 'rgb(216,193,0)', 'rgb(0,0,0)']);
 
+    //Create Y scale and set domain
     var y = d3.scale.linear()
-        .domain([0, 30])
         .rangeRound([h - marginBottom, marginTop]);
 
-    //set the x scale for spacing out the groups of bars by county
+    //Create x scale and set domain
     var x = d3.scale.linear()
-        .domain([1980, 2010])
-        .rangeRound([padding, w - padding * 2]);
+        .rangeRound([marginLeft, w - marginRight]);
 
     //Make the y axis
     var yAxis = d3.svg.axis()
         .scale(y)
-        .orient('left');
+        .orient('left')
+        .tickSize(-w + marginLeft)
+        .tickSubdivide(true);
 
     //Make the x axis                
     var xAxis = d3.svg.axis()
@@ -56,7 +53,7 @@ function drawCommuteLineChart(data) {
         .orient("bottom")
         .tickFormat(formatAsNumber);
 
-    //Use this for making the lines
+    //Create the line variable
     var line = d3.svg.line()
         .interpolate("cardinal")
         .x(function (d) {
@@ -66,33 +63,31 @@ function drawCommuteLineChart(data) {
         return y(d.value);
     });
 
-    //Add the SVG to the document
-    var svg = d3.select("#commute2").append("svg")
-        .attr("width", w + padding * 2)
+    //Create the svg variable
+    var svg = d3.select("#avgCommute").append("svg")
+        .attr("width", w + marginLeft+marginRight)
         .attr("height", h + marginTop + marginBottom)
         .append("g")
         .attr("transform", "translate(" + 0 + "," + 35 + ")");
 
-
-    //Group by Year Label
+    //Identify label variable
     var labelVar = 'Year';
-
+    
+    //Set the key for object permanence
     function key(d) {
         return d.name;
     }
-
+ 
     //Grab the labels for the data fields (exclude county names)
     var varNames = d3.keys(data[0])
         .filter(function (key) {
         return key !== labelVar && key !== 'Source';
     });
 
-
-
     //Set the colors of the data categories
     color.domain(varNames);
 
-    //Process the data to create a object with the name of the county, year, and average commuting variables.    
+    //Create seriesData object that has the name, label, and value of each item
     var seriesData = varNames.map(function (name) {
         return {
             name: name,
@@ -106,10 +101,12 @@ function drawCommuteLineChart(data) {
         };
     });
 
+    //Set the x domain
     x.domain(d3.extent(data, function (d) {
         return d.Year;
     }));
 
+    //Set the y domain
     y.domain([
     d3.min(seriesData, function (c) {
         return d3.min(c.values, function (v) {
@@ -122,61 +119,63 @@ function drawCommuteLineChart(data) {
         });
     })]);
 
-    //Draw the Lines
-    var series = svg.selectAll(".series")
-        .data(seriesData, key)
-        .enter().append("g")
-        .attr("class", "series");
-
-    series.append("path")
-        .attr("class", "line clickable")
-        .attr("d", function (d) {
-        return line(d.values);
-        })
-        .style("stroke", function (d) {
-        return color(d.name);
-        })
-        .style("stroke-width", "4px")
-        .style("fill", "none")
-        .attr("id", function (d) {
-        return d.name + "line";
-        })
-        .on("mouseover", function (d) {
-        d3.select(this).style("opacity", "1");
-        })
-        .on("mouseout", function (d) {
-        d3.select(this).style("opacity", ".75");
-        })
-        .style("opacity", ".75");
-    
-
-    //Add the points
-    series.selectAll(".point")
-        .data(function(d){return d.values;})
-        .enter().append("circle")
-        .attr("class", "point")
-        .attr("cx", function(d){return x(d.label) ; })
-        .attr("cy", function (d) { return y(d.value); })
-        .attr("r", "4px")
-        .style("fill", function (d) { return color(d.name); })
-        .style("stroke-width", "0px")
-        .on("mouseover", function (d) {showPopover.call(this, d);})
-        .on("mouseout",  function (d) { removePopovers(); });
-
-
-
-
     //Add the Y axis
     svg.append('g')
         .attr("class", "y axis")
-        .attr("transform", "translate(" + padding + ",0)")
+        .attr("transform", "translate(" + marginLeft + ",0)")
         .call(yAxis)
-        .append("text")
+        .selectAll("text")
+        .attr("x", -8);
+    svg.selectAll(".y.axis").append("text")
         .attr("transform", "rotate(-90)")
-        .attr("y", -35)
+        .attr("y", -65)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
-        .text("Average length of commute (minutes)");
+        .text("Average Length of Commute (Minutes)");
+
+    //Draw the Lines
+    var series = svg.selectAll(".series")
+        .data(seriesData)
+        .enter().append("g")
+        .attr("class", "series");
+    series.append("path")
+        .attr("class", "line")
+        .attr("d", function (d) {
+        return line(d.values);
+    })
+        .style("stroke", function (d) {
+        return color(d.name);
+    })
+        .style("stroke-width", "4px")
+        .style("fill", "none")
+        .attr("id", function (d) {
+        return d.name;
+    });
+
+    //Add the points
+    series.selectAll(".point")
+        .data(function (d) {
+        return d.values;
+    })
+        .enter().append("circle")
+        .attr("class", "point")
+        .attr("cx", function (d) {
+        return x(d.label);
+    })
+        .attr("cy", function (d) {
+        return y(d.value);
+    })
+        .attr("r", "4px")
+        .style("fill", function (d) {
+        return color(d.name);
+    })
+        .style("stroke-width", "0px")
+        .on("mouseover", function (d) {
+        showPopover.call(this, d);
+    })
+        .on("mouseout", function (d) {
+        removePopovers();
+    });
 
     //Add the x axis
     svg.append('g')
@@ -190,113 +189,73 @@ function drawCommuteLineChart(data) {
         .attr("transform", "rotate(-45)")
         .style("text-anchor", "end");
 
-    //Make the legend
-    var j = 0;
-    var k = 0;
-
-    var legend = svg.selectAll('.legend')
-        .data(color.domain())
-        .enter()
-        .append('g')
-        .attr('class', 'legend clickable')
-        .attr("transform", function (d, i) {
-
-        if (i < 8) {
-            return "translate(" + (padding + i * 100) + "," + (h - marginBottom + 65) + ")";
-        } else if (i >= 8 && i < 16) {
-            j = j + 1;
-            return "translate(" + (padding + (j - 1) * 100) + "," + (h - marginBottom + 105) + ")";
-        } else if (i >= 16 && i < 24) {
-            k = k + 1;
-            return "translate(" + (padding + (k - 1) * 100) + "," + (h - marginBottom + 145) + ")";
-        }
-    });
-  
-  legend.append('rect')
-        .attr('class', 'legendBackground')
-        .attr('width', '100%')
-        .attr('height', '100%')
-        .on("mouseover", function (d) {
-          d3.select(this).style("fill", "#eeeeee");})
-        .on("mouseout", function (d) {
-        d3.select(this).style("fill", "#ffffff");})
-        .style('fill', '#ffffff');
-
-    //Add the legend rects
-    legend.append('rect')
-        .attr('width', legendRectSize)
-        .attr('height', legendRectSize)
-        .style('fill', color)
-        .style('stroke', color)
-        .on("mouseover", function (d) {
-          d3.select('.legendBackground').style("fill", "#eeeeee");
-        d3.select(this).style("opacity", "1");
-        d3.select("#" + d + "line").style("opacity", "1");
-        d3.select("#" + d + "line").style("-webkit-filter", "drop-shadow( 0px 0px 1px rgba(0,0,0,.65) )");
-        d3.select("#" + d + "line").style("filter", "drop-shadow( 0px 0px 1px rgba(0,0,0,.65) )");
-        console.log(d);
-    })
-        .on("mouseout", function (d) {
-        d3.select(this).style("opacity", ".75");
-        d3.select("#" + d + "line").style("opacity", ".75");
-        d3.select("#" + d + "line").style("-webkit-filter", "drop-shadow( 0px 0px 2px rgba(0,0,0,.0) )");
-        d3.select("#" + d + "line").style("filter", "drop-shadow( 0px 0px 2px rgba(0,0,0,.0) )");
-    })
-        .style("opacity", ".5");
-
-    //Add the legend text
-    legend.append('text')
-        .attr('x', legendRectSize + legendSpacing)
-        .attr('y', legendRectSize - legendSpacing)
-        .text(function (seriesData) {
-        return seriesData;
-    });
-
-
-
-    //Update the graph on legend click
-    d3.selectAll(".clickable")
-        .on("click", function (d) {
-          change(d);
-        });
+    //Create the legend div
+    var legendHtml = "<div style='width:" + (w+marginLeft+marginRight) + "px;'>";
     
-    function change(d){
-          console.log(d);
-        
+    //Size of Squares in legend buttons
+    var legendRectSize = 9;
+    
+    //Create a button for each item
+    varNames.forEach(function(element, index){
+        legendHtml = legendHtml + "<button class='btn btn-default btn-xs legend clickable active' style='margin-right:5px;margin-bottom:5px;' id='" + varNames[index] + "'><svg width='9' height='9'><g><rect width='"+legendRectSize+"' height='"+legendRectSize+"' style='fill:" + color(varNames[index]) + ";'></rect></g></svg> " + varNames[index] + "</button>";
+    });
+
+    //Close out the legend div
+    legendHtml = legendHtml + "</div>";
+
+    //Add the legend div to the bottom of the chart
+    var legendDiv = document.createElement("div");
+    var legendIdAtt = document.createAttribute("id");
+    legendIdAtt.value = "legend";
+    legendDiv.setAttributeNode(legendIdAtt);
+    document.getElementById('avgCommute').appendChild(legendDiv);
+    document.getElementById('legend').innerHTML = legendHtml;
+
+    //Event listener for updating the chart
+    $('body').on('click', '.clickable', function () {
+        var id = $(this).attr('id');
+        //Toggle the buttons active or not active
+        if ($(this).hasClass("active")) {
+            $(this).removeClass("active");
+        } else {
+            $(this).addClass("active");
+        }
+        change(id);
+    });
+
+    //Function to update the chart
+    function change(d) {
         var match = false;
         if (d.name) {
-          d = d.name;
+            d = d.name;
         }
         //cycle through the seriesData, if there is a match, remove the item and tell the program that there as a match        
-        for (var i = 0; i < seriesData.length; i++) {
-            if (d == seriesData[i].name) {
-                seriesData.splice(i, 1);
+        seriesData.forEach(function(element, index) {
+            if (d == seriesData[index].name) {
+                seriesData.splice(index, 1);
                 match = true;
             }
-        }
-        
+        });
+
         //If a match was not found, add the item at the end of the object.
         if (match == false) {
             var newDatum;
-            for (var z = 0; z < varNames.length; z++) {
-                if (varNames[z] == d) {
+            varNames.forEach(function(element,index) {
+                if (varNames[index] == d) {
                     newDatum = {
-                        name: varNames[z],
+                        name: varNames[index],
                         values: data.map(function (d) {
                             return {
-                                name: varNames[z],
+                                name: varNames[index],
                                 label: d[labelVar],
-                                value: +d[varNames[z]]
+                                value: +d[varNames[index]]
                             };
                         })
                     };
-                };
-            }
+                }
+            });
             seriesData.push(newDatum)
         }
-
-        //remove all the old lines
-        //svg.selectAll(".series").remove();
 
         //update the y axis with the new min and max
         y.domain([
@@ -310,102 +269,99 @@ function drawCommuteLineChart(data) {
                 return v.value;
             });
         })]);
-        svg.selectAll(".y.axis").transition().duration(1000).call(yAxis);
+        svg.selectAll(".y.axis").transition().duration(1000).call(yAxis).selectAll("text")
+            .attr("x", -8);
 
-        console.log(seriesData);
-        
+        //Load new series data
         series = svg.selectAll(".series")
             .data(seriesData, key);
-            
-        
-        //update
+
+
+        //Update remaining items
         series.selectAll(".series")
-          .transition().duration(1000)
-          .attr("class", "series");
-          
+            .transition().duration(1000)
+            .attr("class", "series");
+
         series.selectAll("path")
-          .transition().duration(1000)
-          .attr("class", "line clickable")
-          .attr("d", function (d) {
-          return line(d.values);
-          })
-          .style("stroke", function (d) {
-          return color(d.name);
-          })
-          .style("stroke-width", "4px")
-          .style("fill", "none")
-          .attr("id", function (d) {
-          return d.name + "line";
-          })
-          .style("opacity", ".75");   
-        
-     
+            .transition().duration(1000)
+            .attr("class", "line")
+            .attr("d", function (d) {
+            return line(d.values);
+        })
+            .style("stroke", function (d) {
+            return color(d.name);
+        })
+            .style("stroke-width", "4px")
+            .style("fill", "none")
+            .attr("id", function (d) {
+            return d.name;
+        });
+
+
         series.selectAll(".point")
-            .data(function(d){return d.values;})
+            .data(function (d) {
+            return d.values;
+        })
             .transition().duration(1000)
             .attr("class", "point")
-            .attr("cx", function(d){return x(d.label) ; })
-            .attr("cy", function (d) { return y(d.value); })
+            .attr("cx", function (d) {
+            return x(d.label);
+        })
+            .attr("cy", function (d) {
+            return y(d.value);
+        })
             .attr("r", "4px")
-            .style("fill", function (d) { return color(d.name); })
+            .style("fill", function (d) {
+            return color(d.name);
+        })
             .style("stroke-width", "0px");
-            
-        
-         
-        //enter
+
+
+
+        //enter new items
         series.enter().append("g")
-          .attr("class", "series")
-          .append("path")
-          .attr("class", "line clickable")
-          .attr("d", function (d) {
-          return line(d.values);
-          })
-          .style("stroke", function (d) {
-          return color(d.name);
-          })
-          .style("stroke-width", "4px")
-          .style("fill", "none")
-          .attr("id", function (d) {
-          return d.name + "line";
-          })
-          .on("mouseover", function (d) {
-          d3.select(this).style("opacity", "1");
-          })
-          .on("mouseout", function (d) {
-          d3.select(this).style("opacity", ".75");
-          })
-          .style("opacity", ".75");
-          
-       series.selectAll(".point")
-            .data(function(d){return d.values;})
-            .enter().append("g").append("circle")            
+            .attr("class", "series")
+            .append("path")
+            .attr("class", "line")
+            .attr("d", function (d) {
+            return line(d.values);
+        })
+            .style("stroke", function (d) {
+            return color(d.name);
+        })
+            .style("stroke-width", "4px")
+            .style("fill", "none")
+            .attr("id", function (d) {
+            return d.name;
+        });
+
+        series.selectAll(".point")
+            .data(function (d) {
+            return d.values;
+        })
+            .enter().append("g").append("circle")
             .attr("class", "point")
-            .attr("cx", function(d){console.log(d);return x(d.label) ; })
-            .attr("cy", function (d) { return y(d.value); })
+            .attr("cx", function (d) {
+            return x(d.label);
+        })
+            .attr("cy", function (d) {
+            return y(d.value);
+        })
             .attr("r", "4px")
-            .style("fill", function (d) { return color(d.name); })
+            .style("fill", function (d) {
+            return color(d.name);
+        })
             .style("stroke-width", "0px")
-            .on("mouseover", function (d) {showPopover.call(this, d);})
-        .on("mouseout",  function (d) { removePopovers(); });;
-          
-          
-          
+            .on("mouseover", function (d) {
+            showPopover.call(this, d);
+        })
+            .on("mouseout", function (d) {
+            removePopovers();
+        });
         
-         series.exit().remove();
-
-        
-  
-       
-
+        //Remove old items
+        series.exit().remove();
     }
-
-
-
-
-
-
-
-
 
     //Function to remove the tooltips
     function removePopovers() {
@@ -423,20 +379,18 @@ function drawCommuteLineChart(data) {
             trigger: 'manual',
             html: true,
             content: function () {
-                return "Average Commute Length: " + d3.format(".1")(d.value ? d.value : d.y1 - d.y0) + " minutes";
+                return "Average Length of Commute: " + d3.format(",")(d.value ? d.value : d.y1 - d.y0) +" Minutes";
             }
         });
         $(this).popover('show')
     }
 }
 
-
-
-//This function passes the google chart info to the drawCommuteLineChart function and runs the function
+//Function to pass the Google Sheet to the drawAvgCommuteChart function and run the function
 function init() {
     Tabletop.init({
         key: public_spreadsheet_url,
-        callback: drawCommuteLineChart,
+        callback: drawAvgCommuteChart,
         simpleSheet: true
     })
 }
