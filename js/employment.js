@@ -7,10 +7,10 @@ function drawEmploymentChart(data) {
     //Create the div for the infographic and add it to the page.
     var div = document.createElement("div");
     var idAtt = document.createAttribute("id");
-    idAtt.value = "commute2";
+    idAtt.value = "employment";
     div.setAttributeNode(idAtt);
     document.getElementById('content').appendChild(div);
-    document.getElementById('commute2').innerHTML = "<br><br><br><hr><h4>Flint Hills Employment by Industry</h4>";
+    document.getElementById('employment').innerHTML = "<br><br><br><hr><h4>Flint Hills Employment by Industry</h4>";
 
     //Width and height
     var w = 850;
@@ -62,7 +62,7 @@ function drawEmploymentChart(data) {
     });
 
     //Create the svg variable
-    var svg = d3.select("#commute2").append("svg")
+    var svg = d3.select("#employment").append("svg")
         .attr("width", w + padding * 2)
         .attr("height", h + marginTop + marginBottom)
         .append("g")
@@ -70,6 +70,11 @@ function drawEmploymentChart(data) {
 
     //Identify label variable
     var labelVar = 'Year';
+    
+    //Set the key for object permanence
+    function key(d) {
+        return d.name;
+    }
  
     //Grab the labels for the data fields (exclude county names)
     var varNames = d3.keys(data[0])
@@ -182,82 +187,71 @@ function drawEmploymentChart(data) {
         .attr("transform", "rotate(-45)")
         .style("text-anchor", "end");
 
+    //Create the legend div
     var legendHtml = "<div style='width:" + (w) + "px;'>";
-      //Size of Squares in legend buttons
+    
+    //Size of Squares in legend buttons
     var legendRectSize = 9;
-    var legendSvg = d3.select(".legend").append("svg")
-        .attr("width", legendRectSize)
-        .attr("height", legendRectSize)
-        .append("g");
-
-
+    
+    //Create a button for each item
     varNames.forEach(function(element, index){
         legendHtml = legendHtml + "<button class='btn btn-default btn-xs legend clickable active' style='margin-right:5px;margin-bottom:5px;' id='" + varNames[index] + "'><svg width='9' height='9'><g><rect width='"+legendRectSize+"' height='"+legendRectSize+"' style='fill:" + color(varNames[index]) + ";'></rect></g></svg> " + varNames[index] + "</button>";
     });
 
+    //Close out the legend div
     legendHtml = legendHtml + "</div>";
 
-
+    //Add the legend div to the bottom of the chart
     var legendDiv = document.createElement("div");
     var legendIdAtt = document.createAttribute("id");
     legendIdAtt.value = "legend";
     legendDiv.setAttributeNode(legendIdAtt);
-    document.getElementById('commute2').appendChild(legendDiv);
+    document.getElementById('employment').appendChild(legendDiv);
     document.getElementById('legend').innerHTML = legendHtml;
 
-
-
-
-
+    //Event listener for updating the chart
     $('body').on('click', '.clickable', function () {
         var id = $(this).attr('id');
-        console.log(id);
+        //Toggle the buttons active or not active
         if ($(this).hasClass("active")) {
             $(this).removeClass("active");
         } else {
             $(this).addClass("active");
         }
-
         change(id);
     });
 
+    //Function to update the chart
     function change(d) {
-        console.log(d);
-
         var match = false;
         if (d.name) {
             d = d.name;
         }
         //cycle through the seriesData, if there is a match, remove the item and tell the program that there as a match        
-        for (var i = 0; i < seriesData.length; i++) {
-            if (d == seriesData[i].name) {
-                console.log(seriesData[i].name);
-
-
-                seriesData.splice(i, 1);
+        seriesData.forEach(function(element, index) {
+            if (d == seriesData[index].name) {
+                seriesData.splice(index, 1);
                 match = true;
-
-
             }
-        }
+        });
 
         //If a match was not found, add the item at the end of the object.
         if (match == false) {
             var newDatum;
-            for (var z = 0; z < varNames.length; z++) {
-                if (varNames[z] == d) {
+            varNames.forEach(function(element,index) {
+                if (varNames[index] == d) {
                     newDatum = {
-                        name: varNames[z],
+                        name: varNames[index],
                         values: data.map(function (d) {
                             return {
-                                name: varNames[z],
+                                name: varNames[index],
                                 label: d[labelVar],
-                                value: +d[varNames[z]]
+                                value: +d[varNames[index]]
                             };
                         })
                     };
-                };
-            }
+                }
+            });
             seriesData.push(newDatum)
         }
 
@@ -278,10 +272,10 @@ function drawEmploymentChart(data) {
 
         //Load new series data
         series = svg.selectAll(".series")
-            .data(seriesData);
+            .data(seriesData, key);
 
 
-        //Update
+        //Update remaining items
         series.selectAll(".series")
             .transition().duration(1000)
             .attr("class", "series");
@@ -322,7 +316,7 @@ function drawEmploymentChart(data) {
 
 
 
-        //enter
+        //enter new items
         series.enter().append("g")
             .attr("class", "series")
             .append("path")
@@ -362,22 +356,11 @@ function drawEmploymentChart(data) {
         })
             .on("mouseout", function (d) {
             removePopovers();
-        });;
-
-
-
-
+        });
+        
+        //Remove old items
         series.exit().remove();
-
-
-
-
-
     }
-
-
-
-
 
     //Function to remove the tooltips
     function removePopovers() {
@@ -402,8 +385,7 @@ function drawEmploymentChart(data) {
     }
 }
 
-
-//Function to Pass the Google Sheet to the drawEmploymentChart function and run the function
+//Function to pass the Google Sheet to the drawEmploymentChart function and run the function
 function init() {
     Tabletop.init({
         key: public_spreadsheet_url,
