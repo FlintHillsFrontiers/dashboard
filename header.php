@@ -47,7 +47,13 @@
                             margin-right: 10px;
                         }
                         
-                        
+                        .y.axis path{
+				    display: none;
+			}
+			
+			.y.axis line{
+				    stroke-dasharray: 2,2;
+			}
                       
                         
                          
@@ -68,6 +74,10 @@
 			}
 			.background{
 				    background: url(img/konza.jpg)  no-repeat center center fixed;
+				    
+			}
+			.btn-default:focus{
+				    background-color: #ffffff !important;
 				    
 			}
                          
