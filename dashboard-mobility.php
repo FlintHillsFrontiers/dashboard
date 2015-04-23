@@ -52,13 +52,13 @@
 	    $(document).ready(function(){
 		
 		$("#bar").click(function(){
-		     $("#commute2").hide();
+		     $("#avgCommute").hide();
 		     $("#commute").show();
 		     $("#modeshare").hide();		 
 		});
 		$("#line").click(function(){
-		     $('#commute2').removeClass('hidden');
-		     $("#commute2").show();
+		     $('#avgCommute').removeClass('hidden');
+		     $("#avgCommute").show();
 		     $("#commute").hide();
 		     $("#modeshare").hide();
 		});
@@ -66,7 +66,7 @@
 		     $('#modeshare').removeClass('hidden');
 		     $("#modeshare").show();
 		     $("#commute").hide();
-		     $("#commute2").hide();
+		     $("#avgCommute").hide();
 		 });
 		$("#mobility-menu").addClass('active');
 	    });

@@ -8,6 +8,7 @@
 	    <div class="row">
 	    <div class="list-group col-md-4">
 			<a href="#" class="list-group-item " id="commutelink"><i class='fa fa-paint-brush'></i>Cultural Jobs</a>
+			<a href="#" class="list-group-item " id="commutelink"><i class='fa fa-lightbulb-o'></i>Patents</a>
 	    </div>
 	    </div>
 	    
@@ -31,6 +32,7 @@
         <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 	<script src="dashboard/tabletop.js"></script>
 	<script src="js/artjobs.js"></script>
+	<script src="js/patents.js"></script>
 	<script>$(document).ready(function(){	
 			$("#cultural-menu").addClass('active');
 	    });</script>

@@ -1,31 +1,31 @@
-var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1HqCxSL_MiKSemCxpetBta8VjLIJUFCu4ka2TI8LGMQw&output=html';
+var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1ZhqzJL0iJfJKQkhmN5gRJG3TF9y-d8Yn275d8lQfYEw&output=html';
 
 
-function drawEasementsMap(data){
+function drawWaterMap(data){
  
   //Set the names of the fields and filter out the label field
   var varNames = d3.keys(data[0])
-    .filter(function(key){return key !=='Label';});
+    .filter(function(key){return key !=='Label' && key !=='Acres' ;});
  
   //Create the HTML for the dropdown menu with the fields
-  var htmlString = "Select Metric: <select id='easementsMetricSelect'>";
+  var htmlString = "Select Metric: <select id='waterMetricSelect'>";
   for (var i=0; i < varNames.length; i++ ) {
     htmlString = htmlString + "<option value='"+varNames[i]+"'>" +varNames[i]+"</option>";
   }
   htmlString = htmlString + "</select>";
   
   //For formatting as percentage 
-  var formatAsPercentage = d3.format("%");
-  var formatDecimal = d3.format(',');
+  var formatAsPercentage = d3.format("%"); 
+  var formatDecimal = d3.format(',.1f0');
 
   
   //Create the div for the infographic and add it to the document
   var div = document.createElement("div");
   var idAtt = document.createAttribute("id");
-  idAtt.value = "easements";
+  idAtt.value = "water";
   div.setAttributeNode(idAtt);
   document.getElementById('content').appendChild(div);
-  document.getElementById('easements').innerHTML ="<hr><h4><i class='fa fa-leaf'></i>Conservation Easements</h4>" + htmlString +
+  document.getElementById('water').innerHTML ="<hr><h4><i class='fa fa-tint'></i>Irrigation</h4>" + htmlString +
     "<!-- Following div sets size of infographic. This layer contains the tooltips; the next div is for the map, which is pulled underneath the tooltips with a negative margin -->\
     <div style='width: 400px; height: 500px;'>\
     <div id='tooltip' class='hidden'>\
@@ -35,8 +35,8 @@ function drawEasementsMap(data){
     </div></div>\
     <!-- Following div contains the map, which is pulled underneath the tooltips with a negative margin -->\
     <div class='row'>\
-    <div class='easementsmap' style='margin-top: -485px; margin-left:15px;'></div>\
-    <div style='margin-left:430px; margin-top:-520px; width:400px;' class='easementsTable' id='easementsTable'></div></div>";
+    <div class='watermap' style='margin-top: -485px; margin-left:15px;'></div>\
+    <div style='margin-left:430px; margin-top:-520px; width:400px;' class='waterTable' id='waterTable'></div></div>";
  
   //Set Color Scale, Colors taken from colorbrewer.js, included in the D3 download
   
@@ -55,27 +55,27 @@ function drawEasementsMap(data){
     .projection(projection);
   
   //Create SVG element
-  var svg = d3.select(".easementsmap")
+  var svg = d3.select(".watermap")
     .append("svg")
     .attr("width", w)
     .attr("height", h);
   
   //Get the selected metric from the drop down menu
-  var easementsMetric = document.getElementById("easementsMetricSelect");
-  var easementsMetricSelect = easementsMetric.value;
+  var waterMetric = document.getElementById("waterMetricSelect");
+  var waterMetricSelect = waterMetric.value;
   
   var maximum = d3.max(data, function(d){
-      return d[easementsMetricSelect];
+      return d[waterMetricSelect];
   });
   
   var minimum = d3.min(data, function(d){
-      return d[easementsMetricSelect];
+      return d[waterMetricSelect];
   });
   
   console.log(data[2]);
   
   var color = d3.scale.quantile()
-    .range(['rgb(237,248,251)','rgb(178,226,226)','rgb(102,194,164)','rgb(44,162,95)','rgb(0,109,44)'])
+    .range(['rgb(239,243,255)','rgb(189,215,231)','rgb(107,174,214)','rgb(49,130,189)','rgb(8,81,156)'])
     .domain([minimum, maximum]);
  
 
@@ -90,23 +90,23 @@ function drawEasementsMap(data){
       .attr("d", path)
       // Set the Fill according to the value of the metric
       .style("fill", function(d){
-          easementsMetricSelect = easementsMetric.value;
+          waterMetricSelect = waterMetric.value;
           var array =[];
           for (var i=0; i<data.length; i++){                                  
-            array.push(data[i][easementsMetricSelect]);
+            array.push(data[i][waterMetricSelect]);
           }
           var maximum = Math.max.apply(Math, array);
           var minimum = Math.min.apply(Math, array);
           color = d3.scale.quantile()
-            .range(['rgb(237,248,251)','rgb(178,226,226)','rgb(102,194,164)','rgb(44,162,95)','rgb(0,109,44)'])
+            .range(['rgb(239,243,255)','rgb(189,215,231)','rgb(107,174,214)','rgb(49,130,189)','rgb(8,81,156)'])
             .domain([minimum, maximum]);
           for (var i=0; i<data.length; i++){
             if (d.properties.NAME10 == data[i].Label) {
-              if (data[i][easementsMetricSelect] == '') {
+              if (data[i][waterMetricSelect] == '') {
                 return '#eeeeee';
               }
               else{
-                 return color(data[i][easementsMetricSelect]);
+                 return color(data[i][waterMetricSelect]);
               }
             } 
           }
@@ -124,23 +124,23 @@ function drawEasementsMap(data){
         .data(json.features)
         .transition()
         .style("fill", function(d){
-          easementsMetricSelect = easementsMetric.value;
+          waterMetricSelect = waterMetric.value;
           var array =[];
           for (var i=0; i<data.length; i++){                                  
-            array.push(data[i][easementsMetricSelect]);
+            array.push(data[i][waterMetricSelect]);
           }
           var maximum = Math.max.apply(Math, array);
           var minimum = Math.min.apply(Math, array);
           color = d3.scale.quantile()
-            .range(['rgb(237,248,251)','rgb(178,226,226)','rgb(102,194,164)','rgb(44,162,95)','rgb(0,109,44)'])
+            .range(['rgb(239,243,255)','rgb(189,215,231)','rgb(107,174,214)','rgb(49,130,189)','rgb(8,81,156)'])
             .domain([minimum, maximum]);
           for (var i=0; i<data.length; i++){
             if (d.properties.NAME10 == data[i].Label) {
-              if (data[i][easementsMetricSelect] == '') {
+              if (data[i][waterMetricSelect] == '') {
                 return '#eeeeee';
               }
               else{
-                 return color(data[i][easementsMetricSelect]);
+                 return color(data[i][waterMetricSelect]);
               }
             } 
           }
@@ -152,11 +152,11 @@ function drawEasementsMap(data){
       var tableHTML = "<table class='table table-condensed'><thead><tr><th>County</th><th style='text-align:right;'>Amount of Land in Conservation</th></tr></thead>";
       var tableData;
       for(var i=0; i < data.length; i++){
-        if (data[i][easementsMetricSelect] == '') {
+        if (data[i][waterMetricSelect] == '') {
           tableData = "-";
         }
         else{
-          tableData = data[i][easementsMetricSelect];
+          tableData = data[i][waterMetricSelect];
         }
         if (tableData == "-") {
           tableHTML = tableHTML + "<tr><td>"+data[i].Label+" County</td><td style='text-align:right;'>" + tableData +  "</td></tr>";
@@ -172,7 +172,7 @@ function drawEasementsMap(data){
       tableHTML= tableHTML + "</table>";
       
       //Add html table
-      document.getElementById("easementsTable").innerHTML=tableHTML; 
+      document.getElementById("waterTable").innerHTML=tableHTML; 
     }//end of change function
     
     //Function to remove the tooltips
@@ -221,7 +221,7 @@ function drawEasementsMap(data){
       .style("text-transform","uppercase");
     
     //Listen for a change in the drop down menu and run the change function if it happens
-    d3.selectAll("#easementsMetricSelect")
+    d3.selectAll("#waterMetricSelect")
       .on("change", change);
    
     //Draw rest of Kansas Counties
@@ -260,11 +260,11 @@ function drawEasementsMap(data){
   
          
 
-}//End of drawEasementsMapfunction
+}//End of drawWaterMapfunction
 
 function init() {
   Tabletop.init( { key: public_spreadsheet_url,
-    callback: drawEasementsMap,
+    callback: drawWaterMap,
     simpleSheet: true } )
 }
 init();

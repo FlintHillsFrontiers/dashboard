@@ -9,7 +9,7 @@ function drawInfographic(metric){
             idAtt.value = "unemployment";
             div.setAttributeNode(idAtt);
             document.getElementById('content').appendChild(div);
-            document.getElementById('unemployment').innerHTML ="<h3 class='panel-title'>Flint Hills Unemployment by County</h3>\
+            document.getElementById('unemployment').innerHTML ="<h4><i class='fa fa-bar-chart'></i>Flint Hills Unemployment by County</h4>\
                 <svg style='position: relative; top: 0px; left: 400px;' class='unemployment' id='unemployment'></svg>\
                 <!-- Following div sets size of infographic. This layer contains the tooltips; the next div is for the map, which is pulled underneath the tooltips with a negative margin -->\
                 <div style='width: 400px; height: 500px; margin-top: -500px;'>\

@@ -1,13 +1,19 @@
-var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1bcCbezIAvKZRCdvsFRgoFKXZIRnF3PsdJx4EfMOSVg4&output=html';
+var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=12jnyhsdE2hh2qUviT8OQGZT2OFIri77jb2FITA-XsE4&output=html';
 
-function drawHousingChart(data){
+function drawSpeciesChart(data){
+    
+    var labelVar = 'Geography';
+    var chartTitle = "<i class='fa fa-life-ring'></i>Endangered Species";
+    var alias = "endangered";
+    var yLabel = "Number of Species";
+    var popoverLabel = "Number of Species: ";
     
     //Formatting functions
     var formatAsPercentage = d3.format("%");
     var formatDecimal = d3.format(',.1f0');
     
     
-    var labelVar = 'Geography';
+    
     
     //Grab the Field Names
     var varNames = d3.keys(data[0])
@@ -15,7 +21,7 @@ function drawHousingChart(data){
     
       
     //Create the HTML for the drop down menu
-    var htmlString = "Select Metric: <select id='crimeMetricSelect'>";
+    var htmlString = "Select Metric: <select id='"+alias+"MetricSelect'>";
     for (var i=0; i < varNames.length; i++ ) {
       htmlString = htmlString + "<option value='"+varNames[i]+"'>" +varNames[i]+"</option>";
     }
@@ -25,10 +31,10 @@ function drawHousingChart(data){
     //Create the div for the infographic and add it to the page.
     var div = document.createElement("div");
     var idAtt = document.createAttribute("id");
-    idAtt.value = "commute";
+    idAtt.value = "species";
     div.setAttributeNode(idAtt);
     document.getElementById('content').appendChild(div);
-    document.getElementById('commute').innerHTML ="<hr><h4><i class='fa fa-home'></i>Housing Affordability</h4><h6>Percentage of housing units affordable to households earning 80% of the HUD Area Median Family Income</h6>" + htmlString+"<br><br>";
+    document.getElementById('species').innerHTML ="<hr><h4>"+chartTitle+"</h4>" + htmlString+"<br><br>";
   
     //Width and height
     var w = 850;
@@ -52,7 +58,7 @@ function drawHousingChart(data){
   //Set the colors of the data categories
   color.domain(varNames);
     
-  //This is kind of unnecessary.  I was originally going to do a stacked bar chart.                  
+          
   data.forEach(function(d){
     var y0 = 0;
     d.mapping = varNames.map(function(name){
@@ -66,9 +72,11 @@ function drawHousingChart(data){
     d.total = d.mapping[0].y1;
   });
   
+  console.log(data);
   //set the y scale
   var y = d3.scale.linear()
-    .domain([0, .75])
+    .domain([0,d3.max(data, function(d){
+        console.log(d[varNames[1]]);return +d[varNames[1]];})])
     .rangeRound([h-marginBottom, marginTop]);
   
  //set the x scale for spacing out the groups of bars by county
@@ -84,8 +92,7 @@ function drawHousingChart(data){
   //Make the y axis
   var yAxis = d3.svg.axis()
                 .scale(y)
-                .orient('left')
-                .tickFormat(formatAsPercentage);
+                .orient('left');
 
   //Make the x axis                
   var xAxis = d3.svg.axis()
@@ -93,7 +100,7 @@ function drawHousingChart(data){
 		.orient("bottom");
   
   //Make the svg
-  var svg = d3.select("#commute").append("svg")
+  var svg = d3.select("#species").append("svg")
           .attr("width",  w)
           .attr("height", h)
           .append("g");
@@ -133,7 +140,7 @@ function drawHousingChart(data){
     .attr("y", 6)
     .attr("dy", ".71em")
     .style("text-anchor", "end")
-    .text("Percentage of Housing Units");
+    .text(yLabel);
       
   //Add the x axis
   svg.append('g')
@@ -153,7 +160,7 @@ function drawHousingChart(data){
     .enter()
     .append('g')
     .attr('class', 'legend')
-    .attr("transform", function(d, i) {return "translate(" + (padding + i*160) + "," + (h-marginBottom+65) +")"});
+    .attr("transform", function(d, i) {return "translate(" + (padding + i*220) + "," + (h-marginBottom+65) +")"});
   
     
   //Add the legend rects
@@ -187,8 +194,8 @@ function drawHousingChart(data){
       trigger: 'manual',
       html : true,
       content: function() { 
-        return "Percentage of Affordable Housing Units: " + 
-        d3.format(".1%")(d.value ? d.value: d.y1 - d.y0); }
+        return popoverLabel+ 
+        d3.format(",")(d.value ? d.value: d.y1 - d.y0); }
     });
     $(this).popover('show')
   }
@@ -197,7 +204,7 @@ function drawHousingChart(data){
 //This function passes the google chart info to the drawChart function and runs the function
 function init() {
               Tabletop.init( { key: public_spreadsheet_url,
-                               callback: drawHousingChart,
+                               callback: drawSpeciesChart,
                                simpleSheet: true } )
             }
 

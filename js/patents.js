@@ -1,17 +1,22 @@
-
-var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1A38RtZl2NSQgNyFGbn1M2qD1EPbxwWzGI9r-XDWgmU0&output=html';
-
+//Load in the Google Sheet
+var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1nHgIk7w74NDR0SQqddVu2L0EYvXqky2X3I-VuFri5IU&output=html';
 
 //Function to draw the chart
-function drawArtJobsChart(data) {
+function drawPatentChart(data) {
+    
+    var labelVar = 'Year';
+    var chartTitle = "<i class='fa fa-lightbulb-o'></i>Patents";
+    var alias = "patents";
+    var yLabel = "Number of Patents";
+    var popoverLabel = "Number of Patents: ";
 
     //Create the div for the infographic and add it to the page.
     var div = document.createElement("div");
     var idAtt = document.createAttribute("id");
-    idAtt.value = "artJobs";
+    idAtt.value = alias;
     div.setAttributeNode(idAtt);
     document.getElementById('content').appendChild(div);
-    document.getElementById('artJobs').innerHTML = "<hr><h4><i class='fa fa-paint-brush'></i>Jobs in the Arts, Entertainment, Recreation, and Visitor Industries</h4>";
+    document.getElementById(alias).innerHTML = "<hr><h4>"+chartTitle+"</h4>";
 
     //Width and height
     var w = 850;
@@ -64,14 +69,13 @@ function drawArtJobsChart(data) {
     });
 
     //Create the svg variable
-    var svg = d3.select("#artJobs").append("svg")
+    var svg = d3.select("#"+alias).append("svg")
         .attr("width", w + marginLeft+marginRight)
         .attr("height", h + marginTop + marginBottom)
         .append("g")
         .attr("transform", "translate(" + 0 + "," + 35 + ")");
 
-    //Identify label variable
-    var labelVar = 'Year';
+    
     
     //Set the key for object permanence
     function key(d) {
@@ -81,7 +85,7 @@ function drawArtJobsChart(data) {
     //Grab the labels for the data fields (exclude county names)
     var varNames = d3.keys(data[0])
         .filter(function (key) {
-        return key !== labelVar && key !== 'Source';
+        return key !== labelVar && key !== 'Total';
     });
 
     //Set the colors of the data categories
@@ -131,7 +135,7 @@ function drawArtJobsChart(data) {
         .attr("y", -65)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
-        .text("Number of Jobs");
+        .text(yLabel);
 
     //Draw the Lines
     var series = svg.selectAll(".series")
@@ -197,7 +201,7 @@ function drawArtJobsChart(data) {
     
     //Create a button for each item
     varNames.forEach(function(element, index){
-        legendHtml = legendHtml + "<button class='btn btn-default btn-xs legend clickable active' style='margin-right:5px;margin-bottom:5px;' id='" + varNames[index] + "'><svg width='9' height='9'><g><rect width='"+legendRectSize+"' height='"+legendRectSize+"' style='fill:" + color(varNames[index]) + ";'></rect></g></svg> " + varNames[index] + "</button>";
+        legendHtml = legendHtml + "<button class='btn btn-default btn-xs legend "+alias+"clickable active' style='margin-right:5px;margin-bottom:5px;' id='" + varNames[index] + "'><svg width='9' height='9'><g><rect width='"+legendRectSize+"' height='"+legendRectSize+"' style='fill:" + color(varNames[index]) + ";'></rect></g></svg> " + varNames[index] + "</button>";
     });
 
     //Close out the legend div
@@ -206,13 +210,13 @@ function drawArtJobsChart(data) {
     //Add the legend div to the bottom of the chart
     var legendDiv = document.createElement("div");
     var legendIdAtt = document.createAttribute("id");
-    legendIdAtt.value = "legend";
+    legendIdAtt.value = alias+"legend";
     legendDiv.setAttributeNode(legendIdAtt);
-    document.getElementById('artJobs').appendChild(legendDiv);
-    document.getElementById('legend').innerHTML = legendHtml;
+    document.getElementById(alias).appendChild(legendDiv);
+    document.getElementById(alias+'legend').innerHTML = legendHtml;
 
     //Event listener for updating the chart
-    $('body').on('click', '.clickable', function () {
+    $('body').on('click', '.'+alias+'clickable', function () {
         var id = $(this).attr('id');
         //Toggle the buttons active or not active
         if ($(this).hasClass("active")) {
@@ -220,11 +224,11 @@ function drawArtJobsChart(data) {
         } else {
             $(this).addClass("active");
         }
-        change(id);
+        changePatents(id);
     });
 
     //Function to update the chart
-    function change(d) {
+    function changePatents(d) {
         var match = false;
         if (d.name) {
             d = d.name;
@@ -379,18 +383,18 @@ function drawArtJobsChart(data) {
             trigger: 'manual',
             html: true,
             content: function () {
-                return "Number of Jobs: " + d3.format(",")(d.value ? d.value : d.y1 - d.y0);
+                return popoverLabel + d3.format(",")(d.value ? d.value : d.y1 - d.y0);
             }
         });
         $(this).popover('show')
     }
 }
 
-//Function to pass the Google Sheet to the drawArtJobsChart function and run the function
+//Function to pass the Google Sheet to the drawPatentChart function and run the function
 function init() {
     Tabletop.init({
         key: public_spreadsheet_url,
-        callback: drawArtJobsChart,
+        callback: drawPatentChart,
         simpleSheet: true
     })
 }

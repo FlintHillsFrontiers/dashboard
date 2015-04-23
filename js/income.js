@@ -1,4 +1,4 @@
-var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1HqCxSL_MiKSemCxpetBta8VjLIJUFCu4ka2TI8LGMQw&output=html';
+var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1ljdI8dfeh2nRXkf6EwrdpmeAIuTyTXsrFZb6pQXktcM&output=html';
 
 
 function drawEasementsMap(data){
@@ -16,7 +16,7 @@ function drawEasementsMap(data){
   
   //For formatting as percentage 
   var formatAsPercentage = d3.format("%");
-  var formatDecimal = d3.format(',');
+  var formatDecimal = d3.format('$,');
 
   
   //Create the div for the infographic and add it to the document
@@ -25,7 +25,7 @@ function drawEasementsMap(data){
   idAtt.value = "easements";
   div.setAttributeNode(idAtt);
   document.getElementById('content').appendChild(div);
-  document.getElementById('easements').innerHTML ="<hr><h4><i class='fa fa-leaf'></i>Conservation Easements</h4>" + htmlString +
+  document.getElementById('easements').innerHTML ="<br><br><br><hr><h4><i class='fa fa-money'></i>Income</h4>" + htmlString +
     "<!-- Following div sets size of infographic. This layer contains the tooltips; the next div is for the map, which is pulled underneath the tooltips with a negative margin -->\
     <div style='width: 400px; height: 500px;'>\
     <div id='tooltip' class='hidden'>\
@@ -149,7 +149,7 @@ function drawEasementsMap(data){
         .style("stroke-width","0.5");
       
       //Create the HTML string for the table
-      var tableHTML = "<table class='table table-condensed'><thead><tr><th>County</th><th style='text-align:right;'>Amount of Land in Conservation</th></tr></thead>";
+      var tableHTML = "<table class='table table-condensed'><thead><tr><th>County</th><th style='text-align:right;'>Income</th></tr></thead>";
       var tableData;
       for(var i=0; i < data.length; i++){
         if (data[i][easementsMetricSelect] == '') {

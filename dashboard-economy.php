@@ -43,6 +43,7 @@
         <script src="dashboard/tabletop.js"></script>
 	<script src="js/employment.js"></script>
 	<script src="js/unemployment.js"></script>
+	<script src="js/income.js"></script>
 	<script>
 	    $(document).ready(function(){
 		

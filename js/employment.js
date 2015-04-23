@@ -10,7 +10,7 @@ function drawEmploymentChart(data) {
     idAtt.value = "employment";
     div.setAttributeNode(idAtt);
     document.getElementById('content').appendChild(div);
-    document.getElementById('employment').innerHTML = "<br><br><br><hr><h4>Flint Hills Employment by Industry</h4>";
+    document.getElementById('employment').innerHTML = "<br><br><br><hr><h4><i class='fa fa-line-chart'></i>Flint Hills Employment by Industry</h4>";
 
     //Width and height
     var w = 850;
