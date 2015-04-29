@@ -25,6 +25,7 @@
         <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 	<script src="dashboard/tabletop.js"></script>
 	<script src="js/affordablehousing.js"></script>
+	<script src="js/salestax.js"></script>
 	<script>$(document).ready(function(){	
 			$("#built-menu").addClass('active');
 	    });</script>
