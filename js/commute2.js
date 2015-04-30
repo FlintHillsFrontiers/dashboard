@@ -11,7 +11,7 @@ function drawAvgCommuteChart(data) {
     idAtt.value = "avgCommute";
     div.setAttributeNode(idAtt);
     document.getElementById('content').appendChild(div);
-    document.getElementById('avgCommute').innerHTML = "<h5>Flint Hills Average Commute Time by County</h5>";
+    document.getElementById('avgCommute').innerHTML = "<hr><h4>Flint Hills Average Commute Time by County</h4>";
 
     //Width and height
     var w = 850;

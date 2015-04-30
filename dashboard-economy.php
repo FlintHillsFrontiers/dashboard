@@ -6,26 +6,11 @@
             <p>Economy relates to what people do for work in the Flint Hills and the goods and services we make here.</p>
             <h3>Metrics</h3>
 	    
-	    <div class="row">
-	    <div class="list-group col-md-4">
-			<a href="#" class="list-group-item " id="commutelink"><i class="fa fa-line-chart"></i>Industries</a>
-			<a href="#" class="list-group-item " id="commutelink"><i class="fa fa-bar-chart"></i>Unemployment</a>
-	    </div>
-	    </div>
+	   
            
             <hr>
 	      <div id="content"></div>
-          <!--
-	  <div id="infographics">
-            <script>
-                window.onload = function() {
-				
-				drawInfographic("unemployment");				
-				
-			}
-            </script>
-	</div>
-          -->
+        
           
           
         </div>

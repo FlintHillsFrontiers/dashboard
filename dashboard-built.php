@@ -26,6 +26,7 @@
 	<script src="dashboard/tabletop.js"></script>
 	<script src="js/affordablehousing.js"></script>
 	<script src="js/salestax.js"></script>
+	<script src="js/vacancy.js"></script>
 	<script>$(document).ready(function(){	
 			$("#built-menu").addClass('active');
 	    });</script>

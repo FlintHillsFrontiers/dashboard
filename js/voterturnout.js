@@ -1,16 +1,17 @@
-var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1hkMAG88WF_2eojzX1EIai5kN8xbb21aDC_r15zBL9ME&output=html';
+var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1NgD2SxbeXvsIc3BwHFx7HTnT-2zODawHRaaGmdyhDuk&output=html';
 
-function drawResidentMap(data){
+
+function drawVoterMap(data){
     
     var labelVar = "Geography";
-    var chartTitle = "<i class='fa fa-bar-chart'></i>Resident Operators";
-    var alias = "resident";
-    var popoverLabel = "Resident Operators: ";
+    var chartTitle = "<i class='fa fa-bar-chart'></i>Voter Turnout";
+    var alias = "voter";
+    var popoverLabel = "Voter Turnout: ";
  
    
   //Set the names of the fields and filter out the label field
   var varNames = d3.keys(data[0])
-    .filter(function(key){return key !== labelVar && key.indexOf("Percent") > -1;});
+    .filter(function(key){return key !== labelVar && key.indexOf("Percentage") > -1;});
  
   //Create the HTML for the dropdown menu with the fields
   var htmlString = "Select Metric: <select id='" + alias + "MetricSelect'>";
@@ -82,7 +83,7 @@ function drawResidentMap(data){
   console.log(minimum);
     
   var color = d3.scale.quantile()
-    .range(['rgb(242,240,247)','rgb(203,201,226)','rgb(158,154,200)','rgb(117,107,177)','rgb(84,39,143)'])
+    .range(['rgb(241,238,246)','rgb(189,201,225)','rgb(116,169,207)','rgb(43,140,190)','rgb(4,90,141)'])
     .domain([minimum, maximum]);
  
 
@@ -270,7 +271,7 @@ function drawResidentMap(data){
 
 function init() {
   Tabletop.init( { key: public_spreadsheet_url,
-    callback: drawResidentMap,
+    callback: drawVoterMap,
     simpleSheet: true } )
 }
 init();

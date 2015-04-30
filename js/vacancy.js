@@ -1,11 +1,12 @@
-var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1hkMAG88WF_2eojzX1EIai5kN8xbb21aDC_r15zBL9ME&output=html';
+var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=18L_frXJP9OfPZY4W2dQDOh0A2Dden42stjXBIMt2JFA&output=html';
+console.log("vacancy");
 
-function drawResidentMap(data){
+function drawVacancyMap(data){
     
     var labelVar = "Geography";
-    var chartTitle = "<i class='fa fa-bar-chart'></i>Resident Operators";
-    var alias = "resident";
-    var popoverLabel = "Resident Operators: ";
+    var chartTitle = "<i class='fa fa-bar-chart'></i>Housing Vacancy";
+    var alias = "vacancy";
+    var popoverLabel = "Housing Vacancy: ";
  
    
   //Set the names of the fields and filter out the label field
@@ -82,7 +83,7 @@ function drawResidentMap(data){
   console.log(minimum);
     
   var color = d3.scale.quantile()
-    .range(['rgb(242,240,247)','rgb(203,201,226)','rgb(158,154,200)','rgb(117,107,177)','rgb(84,39,143)'])
+    .range(['rgb(254,229,217)','rgb(252,174,145)','rgb(251,106,74)','rgb(222,45,38)','rgb(165,15,21)'])
     .domain([minimum, maximum]);
  
 
@@ -270,7 +271,7 @@ function drawResidentMap(data){
 
 function init() {
   Tabletop.init( { key: public_spreadsheet_url,
-    callback: drawResidentMap,
+    callback: drawVacancyMap,
     simpleSheet: true } )
 }
 init();
