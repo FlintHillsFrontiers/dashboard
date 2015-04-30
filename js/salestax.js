@@ -5,10 +5,10 @@ var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&h
 function drawSalesChart(data) {
     
     var labelVar = 'Year';
-    var chartTitle = "<i class='fa fa-credit-card'></i>Sales Tax Revenue";
+    var chartTitle = "<i class='fa fa-credit-card'></i>Retail Sales";
     var alias = "salestax";
-    var yLabel = "Sales Tax Revenue";
-    var popoverLabel = "Sales Tax Revenue: ";
+    var yLabel = "Sales Tax Revenue (2014 dollars)";
+    var popoverLabel = "Sales Tax Revenue (2014 dollars): ";
     
     //Create the div for the infographic and add it to the page.
     var div = document.createElement("div");
@@ -21,14 +21,14 @@ function drawSalesChart(data) {
     //Width and height
     var w = 850;
     var h = 500;
-    var marginLeft = 65;
+    var marginLeft = 100;
     var marginRight = 0;
     var marginBottom = 50;
     var marginTop = 0;
    
     //Formatting help 
     var formatAsPercentage = d3.format("%");
-    var formatAsNumber = d3.format("04d");
+    var formatAsNumber = d3.format("");
 
     //The color scale
     var color = d3.scale.ordinal()
@@ -86,7 +86,7 @@ function drawSalesChart(data) {
     
     var varNames = d3.keys(data[0])
         .filter(function (key) {
-             return key !== labelVar && key.indexOf("Sales Tax Revenue") == -1;    
+             return key !== labelVar && key.indexOf("Sales Tax Revenue") == -1  && key !== "CPI" && key !== "State Sales Tax Rate";    
     });
 
     //Set the colors of the data categories
@@ -133,7 +133,7 @@ function drawSalesChart(data) {
         .attr("x", -8);
     svg.selectAll(".y.axis").append("text")
         .attr("transform", "rotate(-90)")
-        .attr("y", -65)
+        .attr("y", -90)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
         .text(yLabel);

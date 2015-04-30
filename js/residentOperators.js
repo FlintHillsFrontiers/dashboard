@@ -1,15 +1,19 @@
-var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1WeJ-6lM2FieBEQO3lBmVbVQW9Qc3nD9ydGvYbfFjR8E&output=html';
+var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1hkMAG88WF_2eojzX1EIai5kN8xbb21aDC_r15zBL9ME&output=html';
 
-function drawAgsalesMap(data){
+function drawResidentMap(data){
+    
+    var labelVar = "Geography";
+    var chartTitle = "<i class='fa fa-bar-chart'></i>Resident Operators";
+    var alias = "resident";
+    var popoverLabel = "Resident Operators: ";
  
-  console.log("ag map");
-  
+   
   //Set the names of the fields and filter out the label field
   var varNames = d3.keys(data[0])
-    .filter(function(key){return key !=='Label';});
+    .filter(function(key){return key !== labelVar;});
  
   //Create the HTML for the dropdown menu with the fields
-  var htmlString = "Select Metric: <select id='agsalesMetricSelect'>";
+  var htmlString = "Select Metric: <select id='" + alias + "MetricSelect'>";
   for (var i=0; i < varNames.length; i++ ) {
     htmlString = htmlString + "<option value='"+varNames[i]+"'>" +varNames[i]+"</option>";
   }
@@ -23,10 +27,10 @@ function drawAgsalesMap(data){
   //Create the div for the infographic and add it to the document
   var div = document.createElement("div");
   var idAtt = document.createAttribute("id");
-  idAtt.value = "agsales";
+  idAtt.value = alias;
   div.setAttributeNode(idAtt);
   document.getElementById('content').appendChild(div);
-  document.getElementById('agsales').innerHTML ="<hr><h4><span class='glyphicon glyphicon-grain' aria-hidden='true'></span>Agricultural Sales</h4>" + htmlString +
+  document.getElementById(alias).innerHTML ="<hr><h4>" + chartTitle+"</h4>" + htmlString +
     "<!-- Following div sets size of infographic. This layer contains the tooltips; the next div is for the map, which is pulled underneath the tooltips with a negative margin -->\
     <div style='width: 400px; height: 500px;'>\
     <div id='tooltip' class='hidden'>\
@@ -36,8 +40,8 @@ function drawAgsalesMap(data){
     </div></div>\
     <!-- Following div contains the map, which is pulled underneath the tooltips with a negative margin -->\
     <div class='row'>\
-    <div class='agsalesmap' style='margin-top: -485px; margin-left:15px;'></div>\
-    <div style='margin-left:430px; margin-top:-520px; width:400px;' class='agsalesTable' id='agsalesTable'></div></div>";
+    <div class='"+alias+"map' style='margin-top: -485px; margin-left:15px;'></div>\
+    <div style='margin-left:430px; margin-top:-520px; width:400px;' class='"+alias+"Table' id='"+alias+"Table'></div></div>";
  
   //Set Color Scale, Colors taken from colorbrewer.js, included in the D3 download
   
@@ -56,25 +60,27 @@ function drawAgsalesMap(data){
     .projection(projection);
   
   //Create SVG element
-  var svg = d3.select(".agsalesmap")
+  var svg = d3.select("."+alias+"map")
     .append("svg")
     .attr("width", w)
     .attr("height", h);
   
   //Get the selected metric from the drop down menu
-  var agsalesMetric = document.getElementById("agsalesMetricSelect");
-  var agsalesMetricSelect = agsalesMetric.value;
+  var metric = document.getElementById(alias+"MetricSelect");
+  var metricSelect = metric.value;
+ 
   
   var maximum = d3.max(data, function(d){
-      return d[agsalesMetricSelect];
+     
+      return d[metricSelect];
   });
   
   var minimum = d3.min(data, function(d){
-      return d[agsalesMetricSelect];
+      return d[metricSelect];
   });
   
-  console.log(data[2]);
-  
+  console.log(minimum);
+    
   var color = d3.scale.quantile()
     .range(['rgb(237,248,251)','rgb(178,226,226)','rgb(102,194,164)','rgb(44,162,95)','rgb(0,109,44)'])
     .domain([minimum, maximum]);
@@ -91,10 +97,10 @@ function drawAgsalesMap(data){
       .attr("d", path)
       // Set the Fill according to the value of the metric
       .style("fill", function(d){
-          agsalesMetricSelect = agsalesMetric.value;
+          metricSelect = metric.value;
           var array =[];
           for (var i=0; i<data.length; i++){                                  
-            array.push(data[i][agsalesMetricSelect]);
+            array.push(data[i][metricSelect]);
           }
           var maximum = Math.max.apply(Math, array);
           var minimum = Math.min.apply(Math, array);
@@ -102,12 +108,12 @@ function drawAgsalesMap(data){
             .range(['rgb(237,248,251)','rgb(178,226,226)','rgb(102,194,164)','rgb(44,162,95)','rgb(0,109,44)'])
             .domain([minimum, maximum]);
           for (var i=0; i<data.length; i++){
-            if (d.properties.NAME10 == data[i].Label) {
-              if (data[i][agsalesMetricSelect] == '') {
+            if (d.properties.NAME10 == data[i][labelVar]) {
+              if (data[i][metricSelect] == '') {
                 return '#eeeeee';
               }
               else{
-                 return color(data[i][agsalesMetricSelect]);
+                 return color(data[i][metricSelect]);
               }
             } 
           }
@@ -125,10 +131,13 @@ function drawAgsalesMap(data){
         .data(json.features)
         .transition()
         .style("fill", function(d){
-          agsalesMetricSelect = agsalesMetric.value;
+          metricSelect = metric.value;
           var array =[];
-          for (var i=0; i<data.length; i++){                                  
-            array.push(data[i][agsalesMetricSelect]);
+          for (var i=0; i<data.length; i++){
+            if (data[i][metricSelect]!=='') {
+                array.push(data[i][metricSelect]);
+            }
+            
           }
           var maximum = Math.max.apply(Math, array);
           var minimum = Math.min.apply(Math, array);
@@ -136,12 +145,12 @@ function drawAgsalesMap(data){
             .range(['rgb(237,248,251)','rgb(178,226,226)','rgb(102,194,164)','rgb(44,162,95)','rgb(0,109,44)'])
             .domain([minimum, maximum]);
           for (var i=0; i<data.length; i++){
-            if (d.properties.NAME10 == data[i].Label) {
-              if (data[i][agsalesMetricSelect] == '') {
+            if (d.properties.NAME10 == data[i][labelVar]) {
+              if (data[i][metricSelect] == '') {
                 return '#eeeeee';
               }
               else{
-                 return color(data[i][agsalesMetricSelect]);
+                 return color(data[i][metricSelect]);
               }
             } 
           }
@@ -150,30 +159,30 @@ function drawAgsalesMap(data){
         .style("stroke-width","0.5");
       
       //Create the HTML string for the table
-      var tableHTML = "<table class='table table-condensed'><thead><tr><th>County</th><th style='text-align:right;'>Sales</th></tr></thead>";
+      var tableHTML = "<table class='table table-condensed'><thead><tr><th>County</th><th style='text-align:right;'>Value</th></tr></thead>";
       var tableData;
       for(var i=0; i < data.length; i++){
-        if (data[i][agsalesMetricSelect] == '') {
+        if (data[i][metricSelect] == '') {
           tableData = "-";
         }
         else{
-          tableData = data[i][agsalesMetricSelect];
+          tableData = data[i][metricSelect];
         }
         if (tableData == "-") {
-          tableHTML = tableHTML + "<tr><td>"+data[i].Label+" County</td><td style='text-align:right;'>" + tableData +  "</td></tr>";
+          tableHTML = tableHTML + "<tr><td>"+data[i][labelVar]+" County</td><td style='text-align:right;'>" + tableData +  "</td></tr>";
         }
         else if (tableData > 1) {
-          tableHTML = tableHTML + "<tr><td>"+data[i].Label+" County</td><td style='text-align:right;'>" + formatDecimal(tableData,0) +  "</td></tr>";
+          tableHTML = tableHTML + "<tr><td>"+data[i][labelVar]+" County</td><td style='text-align:right;'>" + formatDecimal(tableData,0) +  "</td></tr>";
         }
         else{
-          tableHTML = tableHTML + "<tr><td>"+data[i].Label+" County</td><td style='text-align:right;'>" + formatAsPercentage(tableData) +  "</td></tr>";
+          tableHTML = tableHTML + "<tr><td>"+data[i][labelVar]+" County</td><td style='text-align:right;'>" + formatAsPercentage(tableData) +  "</td></tr>";
         }
         
       }
       tableHTML= tableHTML + "</table>";
       
       //Add html table
-      document.getElementById("agsalesTable").innerHTML=tableHTML; 
+      document.getElementById(alias+"Table").innerHTML=tableHTML; 
     }//end of change function
     
     //Function to remove the tooltips
@@ -222,7 +231,7 @@ function drawAgsalesMap(data){
       .style("text-transform","uppercase");
     
     //Listen for a change in the drop down menu and run the change function if it happens
-    d3.selectAll("#agsalesMetricSelect")
+    d3.selectAll("#"+alias+"MetricSelect")
       .on("change", change);
    
     //Draw rest of Kansas Counties
@@ -265,7 +274,7 @@ function drawAgsalesMap(data){
 
 function init() {
   Tabletop.init( { key: public_spreadsheet_url,
-    callback: drawAgsalesMap,
+    callback: drawResidentMap,
     simpleSheet: true } )
 }
 init();
