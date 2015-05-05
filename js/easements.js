@@ -1,7 +1,9 @@
-var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1HqCxSL_MiKSemCxpetBta8VjLIJUFCu4ka2TI8LGMQw&output=html';
+var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1ZhqzJL0iJfJKQkhmN5gRJG3TF9y-d8Yn275d8lQfYEw&output=html';
 
 
 function drawEasementsMap(data){
+  
+  data = data["Conservation Easements"].elements;
  
   //Set the names of the fields and filter out the label field
   var varNames = d3.keys(data[0])
@@ -265,6 +267,6 @@ function drawEasementsMap(data){
 function init() {
   Tabletop.init( { key: public_spreadsheet_url,
     callback: drawEasementsMap,
-    simpleSheet: true } )
+    simpleSheet: false } )
 }
 init();

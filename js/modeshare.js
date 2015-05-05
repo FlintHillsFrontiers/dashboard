@@ -1,9 +1,11 @@
 
 
 
-var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1yy3KkKy23T5Y5RdSb_BbL_RMvWJEcuBVbEcMCZhi2RY&output=html';
+var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1Wlayz271NRiU1ATYfOxo5VFbYx0lTtcWJI-chNzRgqk&output=html';
 
 function drawChart(data){
+  
+   data = data["Mode Share"].elements;
    
 
   //Create the div for the infographic and add it to the page.
@@ -190,7 +192,7 @@ function arcTween(a) {
 function init() {
               Tabletop.init( { key: public_spreadsheet_url,
                                callback: drawChart,
-                               simpleSheet: true } )
+                               simpleSheet: false } )
             }
 
 //do the stuff.      

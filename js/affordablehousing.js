@@ -1,6 +1,8 @@
-var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1bcCbezIAvKZRCdvsFRgoFKXZIRnF3PsdJx4EfMOSVg4&output=html';
+var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1BVC9ul1RJw87LjjDHIT-a77ErVEh5voJtUEB2Np15Sg&output=html';
 
 function drawHousingChart(data){
+    
+    data = data["Housing Affordability"].elements;
     
     //Formatting functions
     var formatAsPercentage = d3.format("%");
@@ -198,7 +200,7 @@ function drawHousingChart(data){
 function init() {
               Tabletop.init( { key: public_spreadsheet_url,
                                callback: drawHousingChart,
-                               simpleSheet: true } )
+                               simpleSheet: false } )
             }
 
 //do the stuff.      

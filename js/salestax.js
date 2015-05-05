@@ -4,6 +4,9 @@ var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&h
 //Function to draw the chart
 function drawSalesChart(data) {
     
+    data = data["Retail Sales"].elements;
+ 
+    
     var labelVar = 'Year';
     var chartTitle = "<i class='fa fa-credit-card'></i>Retail Sales";
     var alias = "salestax";
@@ -396,7 +399,7 @@ function init() {
     Tabletop.init({
         key: public_spreadsheet_url,
         callback: drawSalesChart,
-        simpleSheet: true
+        simpleSheet: false
     })
 }
 

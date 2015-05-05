@@ -1,8 +1,9 @@
 //Load in the Google Sheet
-var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1nHgIk7w74NDR0SQqddVu2L0EYvXqky2X3I-VuFri5IU&output=html';
+var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1A38RtZl2NSQgNyFGbn1M2qD1EPbxwWzGI9r-XDWgmU0&output=html';
 
 //Function to draw the chart
 function drawPatentChart(data) {
+    data = data["Patents"].elements;
     
     var labelVar = 'Year';
     var chartTitle = "<i class='fa fa-lightbulb-o'></i>Patents";
@@ -395,7 +396,7 @@ function init() {
     Tabletop.init({
         key: public_spreadsheet_url,
         callback: drawPatentChart,
-        simpleSheet: true
+        simpleSheet: false
     })
 }
 

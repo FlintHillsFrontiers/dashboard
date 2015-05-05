@@ -2,6 +2,8 @@ var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&h
 
 function drawCattleChart(data){
     
+    data = data["Cattle Inventory"].elements;
+    
     var labelVar = 'Geography';
     var chartTitle = "<i class='fa fa-bar-chart'></i>Cattle Inventory";
     var alias = "cattle";
@@ -199,7 +201,7 @@ function drawCattleChart(data){
 function init() {
               Tabletop.init( { key: public_spreadsheet_url,
                                callback: drawCattleChart,
-                               simpleSheet: true } )
+                               simpleSheet: false } )
             }
 
 //do the stuff.      

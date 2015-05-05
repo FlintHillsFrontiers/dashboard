@@ -2,6 +2,10 @@ var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&h
 
 
 function drawWaterMap(data){
+  
+  
+  data = data.Irrigation.elements;
+
  
   //Set the names of the fields and filter out the label field
   var varNames = d3.keys(data[0])
@@ -149,7 +153,7 @@ function drawWaterMap(data){
         .style("stroke-width","0.5");
       
       //Create the HTML string for the table
-      var tableHTML = "<table class='table table-condensed'><thead><tr><th>County</th><th style='text-align:right;'>Amount of Land in Conservation</th></tr></thead>";
+      var tableHTML = "<table class='table table-condensed'><thead><tr><th>County</th><th style='text-align:right;'>Amount of Land Under Irrigation</th></tr></thead>";
       var tableData;
       for(var i=0; i < data.length; i++){
         if (data[i][waterMetricSelect] == '') {
@@ -265,6 +269,6 @@ function drawWaterMap(data){
 function init() {
   Tabletop.init( { key: public_spreadsheet_url,
     callback: drawWaterMap,
-    simpleSheet: true } )
+    simpleSheet: false } )
 }
 init();

@@ -1,8 +1,10 @@
-var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1WeJ-6lM2FieBEQO3lBmVbVQW9Qc3nD9ydGvYbfFjR8E&output=html';
+var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=12M8l8K1K78rGnjbgXuKuN8Jx4oZ16FnCn-DOcfhQcBg&output=html';
 
 function drawAgsalesMap(data){
- 
-  console.log("ag map");
+  
+      data = data["Total Sales"].elements;
+
+
   
   //Set the names of the fields and filter out the label field
   var varNames = d3.keys(data[0])
@@ -266,6 +268,6 @@ function drawAgsalesMap(data){
 function init() {
   Tabletop.init( { key: public_spreadsheet_url,
     callback: drawAgsalesMap,
-    simpleSheet: true } )
+    simpleSheet: false } )
 }
 init();

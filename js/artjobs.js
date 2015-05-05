@@ -1,9 +1,10 @@
-
 var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1A38RtZl2NSQgNyFGbn1M2qD1EPbxwWzGI9r-XDWgmU0&output=html';
 
 
 //Function to draw the chart
 function drawArtJobsChart(data) {
+    
+    data = data["Art Jobs"].elements;
 
     //Create the div for the infographic and add it to the page.
     var div = document.createElement("div");
@@ -391,7 +392,7 @@ function init() {
     Tabletop.init({
         key: public_spreadsheet_url,
         callback: drawArtJobsChart,
-        simpleSheet: true
+        simpleSheet: false
     })
 }
 

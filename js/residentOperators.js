@@ -1,6 +1,9 @@
-var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1hkMAG88WF_2eojzX1EIai5kN8xbb21aDC_r15zBL9ME&output=html';
+var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=12M8l8K1K78rGnjbgXuKuN8Jx4oZ16FnCn-DOcfhQcBg&output=html';
 
 function drawResidentMap(data){
+    
+    data = data["Resident Operators"].elements;
+
     
     var labelVar = "Geography";
     var chartTitle = "<i class='fa fa-bar-chart'></i>Resident Operators";
@@ -271,6 +274,6 @@ function drawResidentMap(data){
 function init() {
   Tabletop.init( { key: public_spreadsheet_url,
     callback: drawResidentMap,
-    simpleSheet: true } )
+    simpleSheet: false } )
 }
 init();

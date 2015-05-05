@@ -1,8 +1,10 @@
 //Load in the Google Sheet
-var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=16CDikeIJW2T5AM4V_PgVLQpv1XPfTODz8eVLvAOXeGk&output=html';
+  var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1JsjyHZt5AgJCmC_42X9veNFw6CSaQqPpQCG4Ej5LVB8&output=html';
 
 //Function to draw the chart
 function drawEmploymentChart(data) {
+  
+  data = data["Employment by Industry"].elements;
 
     //Create the div for the infographic and add it to the page.
     var div = document.createElement("div");
@@ -390,7 +392,7 @@ function init() {
     Tabletop.init({
         key: public_spreadsheet_url,
         callback: drawEmploymentChart,
-        simpleSheet: true
+        simpleSheet: false
     })
 }
 

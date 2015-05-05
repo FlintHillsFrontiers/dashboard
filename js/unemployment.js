@@ -43,8 +43,8 @@ function drawInfographic(metric){
   
             var dataArray = [0,0];
            
-            var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=194fY194abaOe9gjopnutM0kBWpnss8-f-wod8YzrjCg&output=html';
-            var public_spreadsheet_url2 = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1JsjyHZt5AgJCmC_42X9veNFw6CSaQqPpQCG4Ej5LVB8&output=html';
+            var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1JsjyHZt5AgJCmC_42X9veNFw6CSaQqPpQCG4Ej5LVB8&output=html';
+            
             
             var margin = {top: 5, right: 0, bottom: 30, left: 75},
               width = 600 - margin.left - margin.right,
@@ -87,6 +87,8 @@ function drawInfographic(metric){
  
 
             function drawMap(dataset, tabletop) {
+              
+              dataset = dataset["Unemployment"].elements;
               
               dataArray[0]=dataset;
             
@@ -333,7 +335,9 @@ function drawInfographic(metric){
                 }
             }
             function drawChart(data){
-
+                
+                data = data["Unemployment Comparison"].elements;
+            
                 dataArray[1] = data;
               
                 year = document.getElementById("yearRange").value;
@@ -378,12 +382,12 @@ function drawInfographic(metric){
  function init() {
               Tabletop.init( { key: public_spreadsheet_url,
                                callback: drawMap,
-                               simpleSheet: true } )
+                               simpleSheet: false } )
             }
             function init2() {
-              Tabletop.init( { key: public_spreadsheet_url2,
+              Tabletop.init( { key: public_spreadsheet_url,
                                callback: drawChart,
-                               simpleSheet: true } )
+                               simpleSheet: false } )
             }
             init();
             init2();

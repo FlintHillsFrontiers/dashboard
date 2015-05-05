@@ -1,8 +1,10 @@
 //Bring in data from Google Sheets
-var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1XmNew2D5Og1C1ohZNQAJWi81XyY_KCk5KJzprHJXx8w&output=html';
+ var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1cukLFdD9JAOOwt4cvFEBkloXml7Rsyui3U6hgfFQF8Y&output=html';
 
 //Function to draw the Educational Attainment chart
 function drawEducationChart(data){
+
+  data = data["Educational Attainment"].elements;
 
   //Create the div for the infographic and add it to the page.
   var div = document.createElement("div");
@@ -392,7 +394,7 @@ function drawEducationChart(data){
 function init() {
               Tabletop.init( { key: public_spreadsheet_url,
                                callback: drawEducationChart,
-                               simpleSheet: true } )
+                               simpleSheet: false } )
             }
 
 //do the stuff.      

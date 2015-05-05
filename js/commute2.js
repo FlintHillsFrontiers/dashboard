@@ -1,9 +1,10 @@
-console.log('hello.');
-var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1EhvozhiQx7S9c5ske2pJJriLdtuaN7Mmq8MsdjhvKXQ&output=html';
+var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1Wlayz271NRiU1ATYfOxo5VFbYx0lTtcWJI-chNzRgqk&output=html';
 
 
 //Function to draw the chart
 function drawAvgCommuteChart(data) {
+
+    data = data["Average Travel Time"].elements;
 
     //Create the div for the infographic and add it to the page.
     var div = document.createElement("div");
@@ -391,7 +392,7 @@ function init() {
     Tabletop.init({
         key: public_spreadsheet_url,
         callback: drawAvgCommuteChart,
-        simpleSheet: true
+        simpleSheet: false
     })
 }
 

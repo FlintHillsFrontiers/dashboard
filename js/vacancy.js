@@ -1,7 +1,10 @@
-var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=18L_frXJP9OfPZY4W2dQDOh0A2Dden42stjXBIMt2JFA&output=html';
-console.log("vacancy");
+var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1BVC9ul1RJw87LjjDHIT-a77ErVEh5voJtUEB2Np15Sg&output=html';
+
 
 function drawVacancyMap(data){
+    
+        data = data["Housing Vacancy"].elements;
+
     
     var labelVar = "Geography";
     var chartTitle = "<i class='fa fa-bar-chart'></i>Housing Vacancy";
@@ -272,6 +275,6 @@ function drawVacancyMap(data){
 function init() {
   Tabletop.init( { key: public_spreadsheet_url,
     callback: drawVacancyMap,
-    simpleSheet: true } )
+    simpleSheet: false } )
 }
 init();

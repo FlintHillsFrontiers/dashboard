@@ -1,6 +1,7 @@
 var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1Wlayz271NRiU1ATYfOxo5VFbYx0lTtcWJI-chNzRgqk&output=html';
 
 function drawChart(data){
+  data = data["Travel Time by Percent"].elements;
 
   //Create the div for the infographic and add it to the page.
   var div = document.createElement("div");
@@ -200,7 +201,7 @@ function drawChart(data){
 function init() {
               Tabletop.init( { key: public_spreadsheet_url,
                                callback: drawChart,
-                               simpleSheet: true } )
+                               simpleSheet: false} )
             }
 
 //do the stuff.      

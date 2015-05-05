@@ -1,6 +1,8 @@
-var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=12jnyhsdE2hh2qUviT8OQGZT2OFIri77jb2FITA-XsE4&output=html';
+var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1ZhqzJL0iJfJKQkhmN5gRJG3TF9y-d8Yn275d8lQfYEw&output=html';
 
 function drawSpeciesChart(data){
+  
+  data = data["Endangered Species"].elements;
 
     var labelVar = 'Geography';
     var chartTitle = "<i class='fa fa-life-ring'></i>Endangered Species";
@@ -196,7 +198,7 @@ function drawSpeciesChart(data){
 function init() {
               Tabletop.init( { key: public_spreadsheet_url,
                                callback: drawSpeciesChart,
-                               simpleSheet: true } )
+                               simpleSheet: false} )
             }
 
 //do the stuff.

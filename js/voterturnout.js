@@ -1,7 +1,8 @@
-var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1NgD2SxbeXvsIc3BwHFx7HTnT-2zODawHRaaGmdyhDuk&output=html';
-
+var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1A38RtZl2NSQgNyFGbn1M2qD1EPbxwWzGI9r-XDWgmU0&output=html';
 
 function drawVoterMap(data){
+    
+    data = data["Voter Turnout"].elements;
     
     var labelVar = "Geography";
     var chartTitle = "<i class='fa fa-bar-chart'></i>Voter Turnout";
@@ -272,6 +273,6 @@ function drawVoterMap(data){
 function init() {
   Tabletop.init( { key: public_spreadsheet_url,
     callback: drawVoterMap,
-    simpleSheet: true } )
+    simpleSheet: false } )
 }
 init();

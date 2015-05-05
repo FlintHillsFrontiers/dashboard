@@ -1,7 +1,9 @@
-var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1ljdI8dfeh2nRXkf6EwrdpmeAIuTyTXsrFZb6pQXktcM&output=html';
+var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1JsjyHZt5AgJCmC_42X9veNFw6CSaQqPpQCG4Ej5LVB8&output=html';
 
 
 function drawEasementsMap(data){
+ 
+ data = data["Income"].elements;
  
   //Set the names of the fields and filter out the label field
   var varNames = d3.keys(data[0])
@@ -265,6 +267,6 @@ function drawEasementsMap(data){
 function init() {
   Tabletop.init( { key: public_spreadsheet_url,
     callback: drawEasementsMap,
-    simpleSheet: true } )
+    simpleSheet: false } )
 }
 init();
