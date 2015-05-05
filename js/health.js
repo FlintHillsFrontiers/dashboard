@@ -5,14 +5,16 @@
 
 function drawMap(data){
   
+  var label = 'Geography';
+  
   data = data["Community Health"].elements;
   
   
   var varNames = d3.keys(data[0])
-                    .filter(function(key){return key !=='name';});
+                    .filter(function(key){return key !==label;});
                 console.log(varNames);
                 
-          var htmlString = "Select Metric: <select id='metricSelect'>";
+        var htmlString = "Select Metric: <select id='metricSelect'>";
           
         for (var i=0; i < varNames.length; i++ ) {
           htmlString = htmlString + "<option value='"+varNames[i]+"'>" +varNames[i]+"</option>";
@@ -96,7 +98,7 @@ function drawMap(data){
                         .style("fill", function(d){
                                 metricSelect = metric.value;
                                 for (var i=0; i<data.length; i++){                                  
-                                  if (d.properties.NAME10 == data[i].name) {
+                                  if (d.properties.NAME10 == data[i][label]) {
                                       if(data[i][metricSelect] == 'better'){
                                         return '#91cf60';
                                       }
@@ -127,7 +129,7 @@ function drawMap(data){
                         .style("fill", function(d){
                                 metricSelect = metric.value;
                                 for (var i=0; i<data.length; i++){                                  
-                                  if (d.properties.NAME10 == data[i].name) {
+                                  if (d.properties.NAME10 == data[i][label]) {
                                       if(data[i][metricSelect] == 'better'){
                                         return '#91cf60';
                                       }
@@ -152,16 +154,16 @@ function drawMap(data){
         
                     for(var i=0; i < data.length; i++){
                       if(data[i][metricSelect] == 'better'){
-                        tableHTML = tableHTML + "<tr><td><i class='fa fa-circle' style='color: #91cf60;'></td><td>" + data[i].name +  " County</td></tr>";
+                        tableHTML = tableHTML + "<tr><td><i class='fa fa-circle' style='color: #91cf60;'></td><td>" + data[i][label] +  " County</td></tr>";
                       }
                                       else if(data[i][metricSelect] == 'moderate'){
-                                        tableHTML = tableHTML + "<tr><td><i class='fa fa-square fa-rotate-30' style='color: #ffffbf;'></td><td>" + data[i].name +  " County</td></tr>";
+                                        tableHTML = tableHTML + "<tr><td><i class='fa fa-square fa-rotate-30' style='color: #ffffbf;'></td><td>" + data[i][label] +  " County</td></tr>";
                                       }
                                       else if(data[i][metricSelect] == 'worse'){
-                                         tableHTML = tableHTML + "<tr><td><i class='fa fa-square' style='color: #fc8d59;'></td><td>" + data[i].name +  " County</td></tr>";
+                                         tableHTML = tableHTML + "<tr><td><i class='fa fa-square' style='color: #fc8d59;'></td><td>" + data[i][label] +  " County</td></tr>";
                                       }
                                       else{
-                                        tableHTML = tableHTML + "<tr><td><i class='fa fa-circle-o' style='color: #dddddd;'</td><td>" + data[i].name +  " County</td></tr>";
+                                        tableHTML = tableHTML + "<tr><td><i class='fa fa-circle-o' style='color: #dddddd;'</td><td>" + data[i][label] +  " County</td></tr>";
                                       }
          
                 
@@ -264,16 +266,16 @@ function drawMap(data){
         
         for(var i=0; i < data.length; i++){
           if(data[i][metricSelect] == 'better'){
-                                        tableHTML = tableHTML + "<tr><td><i class='fa fa-circle' style='color: #91cf60;'></td><td>" + data[i].name +  " County</td></tr>";
+                                        tableHTML = tableHTML + "<tr><td><i class='fa fa-circle' style='color: #91cf60;'></td><td>" + data[i][label] +  " County</td></tr>";
                                       }
                                       else if(data[i][metricSelect] == 'moderate'){
-                                        tableHTML = tableHTML + "<tr><td><i class='fa fa-square fa-rotate-30' style='color: #ffffbf;'></td><td>" + data[i].name +  " County</td></tr>";
+                                        tableHTML = tableHTML + "<tr><td><i class='fa fa-square fa-rotate-30' style='color: #ffffbf;'></td><td>" + data[i][label] +  " County</td></tr>";
                                       }
                                       else if(data[i][metricSelect] == 'worse'){
-                                         tableHTML = tableHTML + "<tr><td><i class='fa fa-square' style='color: #fc8d59;'></td><td>" + data[i].name +  " County</td></tr>";
+                                         tableHTML = tableHTML + "<tr><td><i class='fa fa-square' style='color: #fc8d59;'></td><td>" + data[i][label] +  " County</td></tr>";
                                       }
                                       else{
-                                        tableHTML = tableHTML + "<tr><td><i class='fa fa-circle-o' style='color: #eeeeee;'</td><td>" + data[i].name +  " County</td></tr>";
+                                        tableHTML = tableHTML + "<tr><td><i class='fa fa-circle-o' style='color: #eeeeee;'</td><td>" + data[i][label] +  " County</td></tr>";
                                       }
          
                 

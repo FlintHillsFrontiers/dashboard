@@ -7,7 +7,7 @@ function drawEasementsMap(data){
  
   //Set the names of the fields and filter out the label field
   var varNames = d3.keys(data[0])
-    .filter(function(key){return key !=='Label';});
+    .filter(function(key){return key !=='Label' && key !=='Acres';});
  
   //Create the HTML for the dropdown menu with the fields
   var htmlString = "Select Metric: <select id='easementsMetricSelect'>";

@@ -3,18 +3,7 @@ var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&h
 function drawChart(data){
   data = data["Travel Time by Percent"].elements;
 
-  //Create the div for the infographic and add it to the page.
-  var div = document.createElement("div");
-  var idAtt = document.createAttribute("id");
-  idAtt.value = "commute";
-  div.setAttributeNode(idAtt);
-  document.getElementById('content').appendChild(div);
-  document.getElementById('commute').innerHTML ="<hr><h4>Percent of Commuters traveling 30, 45, and 60+ minutes by County</h4>Year: <select id='yearSelect'>\
-          <option value='1980'>1980</option>\
-          <option value='1990'>1990</option>\
-          <option value='2000'>2000</option>\
-          <option value='2010'>2010</option>\
-          </select><br><br>";
+ 
   
   //Width and height
   var w = 850;
@@ -33,6 +22,7 @@ function drawChart(data){
   //The color scale
   var color = d3.scale.ordinal()
     .range(['rgb(254,232,200)','rgb(253,187,132)','rgb(227,74,51)']);
+    
   
   
   //Manipulate the data in order to create grouped bar chart
@@ -44,8 +34,50 @@ function drawChart(data){
   var varNames = d3.keys(data[0])
     .filter(function(key){return key !==labelVar;});
     
-  //Set the colors of the data categories
-  color.domain(varNames);
+  
+    
+  var years = [];
+  
+  function determineYears(varNames) {
+    var yearsArray = [];
+    varNames.forEach(function(entry, index){
+        if(yearsArray.indexOf(varNames[index].substring(0,4)) == -1){
+            yearsArray.push(varNames[index].substring(0,4));
+        }
+      
+      
+    })
+    return yearsArray;
+  }
+years = determineYears(varNames);
+
+var htmlString = "<hr><h4>Percentage of Commuters Traveling 30, 45, and 60+ Minutes</h4>Year: <select id='yearSelect'>";
+
+years.forEach(function(entry, index){
+  htmlString = htmlString + "<option value='" + years[index] +"'>" + years[index] +"</option>";
+});
+
+htmlString = htmlString + "</select><br><Br>";
+ 
+
+  
+  
+   //Create the div for the infographic and add it to the page.
+  var div = document.createElement("div");
+  var idAtt = document.createAttribute("id");
+  idAtt.value = "commute";
+  div.setAttributeNode(idAtt);
+  document.getElementById('content').appendChild(div);
+  document.getElementById('commute').innerHTML = htmlString;
+  
+    //Get the selected metric from the drop down menu
+  var metric = document.getElementById('yearSelect');
+  var metricSelect = metric.value;
+  
+
+ 
+        
+  
     
   //This is kind of unnecessary.  I was originally going to do a stacked bar chart.                  
   data.forEach(function(d){
@@ -68,12 +100,28 @@ function drawChart(data){
   
  //set the x scale for spacing out the groups of bars by county
   var x0 = d3.scale.ordinal()
-                .domain(data.map(function (d) { return d.county; }))
+                .domain(data.map(function (d) { return d[labelVar]; }))
                 .rangeRoundBands([padding, w-padding*2], 0.2);
+  
+  function makeDomainArray(varNames){
+      var domainArray = [];
+      varNames.forEach(function(entry,index){
+         if(varNames[index].substring(0,4) == metricSelect){
+          domainArray.push(varNames[index]);
+         }
+      });
+      return domainArray;    
+      
+        
+      
+  }
+  
+      //Set the colors of the data categories
+  color.domain(makeDomainArray(varNames));
   
   //set the x scale for spacing out the bars within each group
   var x1 = d3.scale.ordinal()
-              .domain(varNames)
+              .domain(makeDomainArray(varNames))
               .rangeRoundBands([0, x0.rangeBand()]);
    
   //Make the y axis
@@ -100,12 +148,21 @@ function drawChart(data){
     .enter().append("g")
     .attr("class", "series")
     .attr("transform", function (d) { 
-      return "translate(" + x0(d.county) + ",0)"; 
+      return "translate(" + x0(d[labelVar]) + ",0)"; 
     });
 
   //Add the bars the the chart
   selection.selectAll("rect")
-    .data(function (d) { return d.mapping; }) //A
+    .data(function (d) {
+      var newArray = [];
+      d.mapping.forEach(function(entry, index){
+        
+        if(metricSelect == d.mapping[index].name.substring(0,4)){
+            newArray.push(d.mapping[index]);
+          }
+           });
+      return newArray;
+       }) 
     .enter().append("rect")
     .attr("width", x1.rangeBand())
     .attr("class", "bar")
@@ -148,7 +205,7 @@ function drawChart(data){
     .enter()
     .append('g')
     .attr('class', 'legend')
-    .attr("transform", function(d, i) {return "translate(" + (padding + i*160) + "," + (h-marginBottom+65) +")"});
+    .attr("transform", function(d, i) {return "translate(" + (padding + i*200) + "," + (h-marginBottom+65) +")"});
   
     
   //Add the legend rects
@@ -163,15 +220,7 @@ function drawChart(data){
     .attr('x', legendRectSize + legendSpacing)           
     .attr('y', legendRectSize - legendSpacing)           
     .text(function(d) {
-      if (d === "min30"){
-        return "Commuting 30+ minutes";
-      }
-      else if (d==='min45') {
-        return "Commuting 45+ minutes";
-      }
-      else if (d==='min60') {
-        return "Commuting 60+ minutes";
-      }
+      return d.substring(5);
     });
           
   //Function to remove the tooltips
@@ -195,6 +244,36 @@ function drawChart(data){
     });
     $(this).popover('show')
   }
+
+  function change(){
+    metricSelect = metric.value;
+  
+     x1 = d3.scale.ordinal()
+              .domain(makeDomainArray(varNames))
+              .rangeRoundBands([0, x0.rangeBand()]);
+    
+    selection.selectAll("rect")
+    .data(function (d) {
+      var newArray = [];
+      d.mapping.forEach(function(entry, index){
+        
+        if(metricSelect == d.mapping[index].name.substring(0,4)){
+            newArray.push(d.mapping[index]);
+          }
+           });
+      return newArray;
+       }) 
+    .transition()
+    .attr("width", x1.rangeBand())
+    .attr("class", "bar")
+    .attr("x", function(d){return x1(d.name);})
+    .attr("y", function (d) { return y(d.y1); })
+    .attr("height", function (d) { return y(d.y0) - y(d.y1); });
+  }
+
+  
+  d3.selectAll("#yearSelect")
+      .on("change", change);
 }
 
 //This function passes the google chart info to the drawChart function and runs the function

@@ -12,7 +12,7 @@ function drawEducationChart(data){
   idAtt.value = "education";
   div.setAttributeNode(idAtt);
   document.getElementById('content').appendChild(div);
-  document.getElementById('education').innerHTML ="<hr><h4><i class='fa fa-graduation-cap'></i>Flint Hills Educational Attainment by County</h4>";
+  document.getElementById('education').innerHTML ="<hr><h4><i class='fa fa-graduation-cap'></i>Educational Attainment</h4>";
   
   //Width and height
   var w = 850;
