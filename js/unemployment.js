@@ -9,7 +9,16 @@ function drawInfographic(metric){
             idAtt.value = "unemployment";
             div.setAttributeNode(idAtt);
             document.getElementById('content').appendChild(div);
-            document.getElementById('unemployment').innerHTML ="<h4><i class='fa fa-bar-chart'></i>Flint Hills Unemployment by County</h4>\
+            document.getElementById('unemployment').innerHTML ="<h4><i class='fa fa-bar-chart'></i>Unemployment</h4>\
+            <div>Year: <select id='unemploymentYearSelect'>\
+                <option value='2007'>2007</option>\
+                <option value='2008'>2008</option>\
+                <option value='2009'>2009</option>\
+                <option value='2010'>2010</option>\
+                <option value='2011'>2011</option>\
+                <option value='2012'>2012</option>\
+                <option value='2013'>2013</option>\
+                </select></div>\
                 <svg style='position: relative; top: 0px; left: 400px;' class='unemployment' id='unemployment'></svg>\
                 <!-- Following div sets size of infographic. This layer contains the tooltips; the next div is for the map, which is pulled underneath the tooltips with a negative margin -->\
                 <div style='width: 400px; height: 500px; margin-top: -500px;'>\
@@ -20,25 +29,7 @@ function drawInfographic(metric){
                 </div></div>\
                 <!-- Following div contains the map, which is pulled underneath the tooltips with a negative margin -->\
                 <div class='map' style='margin-top: -500px'></div>\
-                <datalist id='yearlist'>\
-                <option>2007</option>\
-                <option>2008</option>\
-                <option>2009</option>\
-                <option>2010</option>\
-                <option>2011</option>\
-                <option>2012</option>\
-                <option>2013</option>\
-                </datalist>\
-                <div class='col-md-12'><input type='range' id='yearRange' value='2007'  min='2007' max='2013' step='1' list='yearlist' >\
-                <div class='btn-toolbar' role='toolbar' aria-label='...'>\
-                <div class='btn-group btn-group-sm' role='group' aria-label='...'>\
-                  <button type='button' class='btn btn-default' disabled='disabled'> <span class='glyphicon glyphicon-step-backward' aria-hidden='true'></span></button>\
-                  <button type='button' class='btn btn-default' disabled='disabled'> <span class='glyphicon glyphicon-play' aria-hidden='true'></span></button>\
-                  <button type='button' class='btn btn-default' disabled='disabled'> <span class='glyphicon glyphicon-step-forward' aria-hidden='true'></span></button>\
-                </div>\
-                <div class='btn-group btn-group-sm' role='group' aria-label='...'>\
-                  <span id='range' class='pull-right' style='font-weight: bold; padding-top: 5px; padding-left: 5px;'></span>\
-                  </div></div>";
+                                                 </div></div>";
     
   
             var dataArray = [0,0];
@@ -114,8 +105,8 @@ function drawInfographic(metric){
                                                   
                   
               //Set year at bottom of slider
-              var year = document.getElementById("yearRange").value;
-              document.getElementById("range").innerHTML=year;
+              var year = document.getElementById("unemploymentYearSelect").value;
+              
           
               /*
                * The following function draws the Flint Hills counties, kansas counties, US state boundaries, and unemployment circles.
@@ -198,11 +189,11 @@ function drawInfographic(metric){
                       })
                       //Set the Radius
                       .attr("r", function(d){
-                        return Math.sqrt(parseInt(d['unemp'+year.toString()]) * 0.5);    
+                        return Math.sqrt(parseInt(d[year.toString()+' Unemployment']) * 0.5);    
                       })
                       //Set the Fill Color
                       .style("fill", function(d) {
-                         var value = d['unemprate'+year.toString()];			   		
+                         var value = d[year.toString()+' Unemployment Rate'];			   		
                          if(value) {
                           return color(value);
                          }
@@ -224,11 +215,11 @@ function drawInfographic(metric){
                           .style("left", xPosition + "px")
                           .style("top", yPosition  + "px")
                           .select("#name")
-                          .text(d.name + " County");
+                          .text(d['County'] + " County");
                         d3.select("#unemployed")
-                          .text("Number of Unemployed: " + numberWithCommas(d['unemp'+year.toString()]));
+                          .text("Number of Unemployed: " + numberWithCommas(d[year.toString()+' Unemployment']));
                         d3.select("#rate")
-                          .text("Unemployment Rate: " + Math.round(d['unemprate'+year.toString()] * 1000)/10 + "%");
+                          .text("Unemployment Rate: " + Math.round(d[year.toString()+' Unemployment Rate'] * 1000)/10 + "%");
                       
                         //Show the tooltip
                         d3.select("#tooltip").classed("hidden", false);
@@ -246,12 +237,12 @@ function drawInfographic(metric){
                 //Begin section for updating based on year
                 
                 //Listen for change on scale
-                d3.select("#yearRange")
+                d3.select("#unemploymentYearSelect")
                   .on("change",function(){
                     
                     //Change the year displayed
-                    year = document.getElementById("yearRange").value;
-                    document.getElementById("range").innerHTML=year;
+                    year = document.getElementById("unemploymentYearSelect").value;
+                    
                     
                     chart.selectAll(".bar")
                             .data(dataArray[1])
@@ -284,20 +275,20 @@ function drawInfographic(metric){
                       .attr("cy", function(d) {
                         return projection([d.lon, d.lat])[1];
                       })
-                      //Reset the Radius
+                     //Set the Radius
                       .attr("r", function(d){
-                        return Math.sqrt(parseInt(d['unemp'+year.toString()]) * 0.5);    
+                        return Math.sqrt(parseInt(d[year.toString()+' Unemployment']) * 0.5);    
                       })
-                      //Change the Fill Color
+                      //Set the Fill Color
                       .style("fill", function(d) {
-                        var value = d['unemprate'+year.toString()];			   		
-                        if(value) {
+                         var value = d[year.toString()+' Unemployment Rate'];			   		
+                         if(value) {
                           return color(value);
-                        }
-                        else {
-                          //If value is undefined…
+                         }
+                         else {
+                         //If value is undefined…
                             return "#333";
-                        }
+                         }
                       })
                       .style("opacity",".75")
                       //Update Tooltips	  
@@ -312,13 +303,13 @@ function drawInfographic(metric){
                           .style("left", xPosition + "px")
                           .style("top", yPosition  + "px")
                           .select("#name")
-                          .text(d.name + " County");
+                          .text(d['County'] + " County");
                                   
                         d3.select("#unemployed")
-                          .text("Number of Unemployed: " + numberWithCommas(d['unemp'+year.toString()]));
+                          .text("Number of Unemployed: " + numberWithCommas(d[year.toString()+' Unemployment']));
                                
                         d3.select("#rate")
-                          .text("Unemployment Rate: " + Math.round(d['unemprate'+year.toString()] * 1000)/10 + "%");
+                          .text("Unemployment Rate: " + Math.round(d[year.toString()+' Unemployment Rate'] * 1000)/10 + "%");
                                 
                         //Show the tooltip
                         d3.select("#tooltip").classed("hidden", false);
@@ -340,7 +331,7 @@ function drawInfographic(metric){
             
                 dataArray[1] = data;
               
-                year = document.getElementById("yearRange").value;
+                year = document.getElementById("unemploymentYearSelect").value;
                
                 y.domain([0, 0.1 ]).range([height, 0]);
                 x.domain(data.map(function(d) { return d.area; }));
