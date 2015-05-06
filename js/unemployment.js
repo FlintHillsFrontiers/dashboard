@@ -9,7 +9,7 @@ function drawInfographic(metric){
             idAtt.value = "unemployment";
             div.setAttributeNode(idAtt);
             document.getElementById('content').appendChild(div);
-            document.getElementById('unemployment').innerHTML ="<h4><i class='fa fa-bar-chart'></i>Unemployment</h4>\
+            document.getElementById('unemployment').innerHTML = "<h4><i class='fa fa-bar-chart'></i>Unemployment</h4>\
             <div>Year: <select id='unemploymentYearSelect'>\
                 <option value='2007'>2007</option>\
                 <option value='2008'>2008</option>\
@@ -30,6 +30,7 @@ function drawInfographic(metric){
                 <!-- Following div contains the map, which is pulled underneath the tooltips with a negative margin -->\
                 <div class='map' style='margin-top: -500px'></div>\
                                                  </div></div>";
+           
     
   
             var dataArray = [0,0];
@@ -80,6 +81,39 @@ function drawInfographic(metric){
             function drawMap(dataset, tabletop) {
               
               dataset = dataset["Unemployment"].elements;
+              
+               //Grab the labels for the data fields (exclude county names)
+  var varNames = d3.keys(dataset[0])
+    .filter(function(key){return key !=='County' && key !=='lat' && key !=='lon' && key !=='pop';});
+    
+ 
+    
+  //Determine the number of years to display in the drop down menu by selecting the first 4 characters of the column heading, which should be the year
+  var years = [];  
+  function determineYears(varNames) {
+    var yearsArray = [];
+    varNames.forEach(function(entry, index){
+        if(yearsArray.indexOf(varNames[index].substring(0,4)) == -1){
+            yearsArray.push(varNames[index].substring(0,4));
+        }
+      
+      
+    })
+    return yearsArray;
+  }
+  years = determineYears(varNames);
+  
+     console.log(years);
+
+  //Create dropdown menu
+  var htmlString = "";
+  years.forEach(function(entry, index){
+    htmlString = htmlString + "<option value='" + years[index] +"'>" + years[index] +"</option>";
+  });
+ 
+  
+   document.getElementById('unemploymentYearSelect').innerHTML = htmlString;
+
               
               dataArray[0]=dataset;
             
@@ -249,7 +283,7 @@ function drawInfographic(metric){
                             .transition()
                             .duration(1500)
                             .attr("class", "bar")
-                            .attr("x", function(d) { return x(d.area); })
+                            .attr("x", function(d) { return x(d['Geography']); })
                             .attr("y", function(d){ return height - y(0.1-d[year.toString()]);} )
                             .attr("width", x.rangeBand())
                             .attr("height", function(d) { return y(0.1-d[year.toString()]); })
@@ -334,7 +368,7 @@ function drawInfographic(metric){
                 year = document.getElementById("unemploymentYearSelect").value;
                
                 y.domain([0, 0.1 ]).range([height, 0]);
-                x.domain(data.map(function(d) { return d.area; }));
+                x.domain(data.map(function(d) { return d['Geography']; }));
               
                 chart.append("g")
                     .attr("class", "x axis")
@@ -355,7 +389,7 @@ function drawInfographic(metric){
                     .data(dataArray[1])
                     .enter().append("rect")
                     .attr("class", "bar")
-                    .attr("x", function(d) { return x(d.area); })
+                    .attr("x", function(d) { return x(d['Geography']); })
                     .attr("y", function(d){ return height - y(0.1-d[year.toString()]);} )
                     .attr("width", x.rangeBand())
                     .attr("height", function(d) { return y(0.1-d[year.toString()]); } )
@@ -382,6 +416,7 @@ function drawInfographic(metric){
             }
             init();
             init2();
+      
 }
 
 drawInfographic();
