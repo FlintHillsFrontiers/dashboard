@@ -1,34 +1,28 @@
-//Link to data
+
+
+
 var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1Wlayz271NRiU1ATYfOxo5VFbYx0lTtcWJI-chNzRgqk&output=html';
 
 function drawChart(data){
   
-  //Select correct sheet
-  data = data["Mode Share"].elements;
-  
-  //Determine the number of years to display in the drop down menu by selecting the first 4 characters of the column heading, which should be the year
-  var years = [];
-  data.forEach(function(entry){
-    if(years.indexOf(entry.Year) == -1){
-            years.push(entry.Year);
-    }
-  });
-  
-  //Create the HTML for the drop down selection
-  var htmlSelect = "<select id='modeYearSelect'>";
-  years.forEach(function(year){
-    htmlSelect = htmlSelect + "<option value='" + year + "'>" + year +"</option>";
-  });
-  htmlSelect = htmlSelect + "</select>";
-  
+   data = data["Mode Share"].elements;
+   
+
   //Create the div for the infographic and add it to the page.
   var div = document.createElement("div");
   var idAtt = document.createAttribute("id");
+  
   idAtt.value = "modeshare";
   div.setAttributeNode(idAtt);
+  
   document.getElementById('content').appendChild(div);
   document.getElementById('modeshare').innerHTML ="<hr><h4>Means of Travel to Work by County</h4>\
-          Year: " + htmlSelect + "&nbsp; &nbsp; &nbsp;\
+          Year: <select id='yearSelect'>\
+          <option value='1980'>1980</option>\
+          <option value='1990'>1990</option>\
+          <option value='2000'>2000</option>\
+          <option value='2010'>2010</option>\
+          </select>&nbsp; &nbsp; &nbsp;\
           Geography: <select id='geoSelect'>\
           <option value='Butler'>Butler County, KS</option>\
           <option value='Chase'>Chase County, KS</option>\
@@ -49,9 +43,7 @@ function drawChart(data){
           <option value='Washington'>Washington County, KS</option>\
          </select><br>";
 
-  //Get the selected metric from the drop down menu
-  var metric = document.getElementById('modeYearSelect');
-  var metricSelect = metric.value;
+  
   
   var width = 600,
       height = 500,
@@ -71,48 +63,32 @@ function drawChart(data){
     .innerRadius(radius * 0.9)
     .outerRadius(radius * 0.9);
     
- // var key = function(d){ return d.data.Mode; };
+  var key = function(d){ return d.data.Mode; };
 
   var geo = document.getElementById("geoSelect");
 
   var pie = d3.layout.pie()
     .sort(null)
-    .value(function(d) {     
-        console.log(d[0]);
-        return d[1];  
-     
-    });
+    .value(function(d) { return d[geo.value]; });
 
   var svg = d3.select("#modeshare").append("svg")
     .attr("width", width)
     .attr("height", height)
     .append("g")
     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-  
-  var displayData = [];
     
   data.forEach(function(d) {
-    console.log(d);
-    if (d.Year == metricSelect) {
-      displayData.push([d.Mode, d[geo.value]]);
-    }
+    d[geo.value]= +d[geo.value];
   });
-  console.log(displayData);
 
-  var path = svg.datum(displayData).selectAll(".arc")
+  var path = svg.datum(data).selectAll(".arc")
       .data(pie)
       .enter().append("path")
       .attr("class", "arc")
       .attr("d", arc)
-      .attr("id",function(d){
-      
-        return d.data[0];
-      })
-      .attr("fill", function(d) {
-        
-        return color(d.data[0]); });
-      //.on("mouseover", function (d) { showPopover.call(this, d); })
-      //.on("mouseout",  function (d) { removePopovers(); });
+      .attr("fill", function(d) { return color(d.data.Mode); })
+      .on("mouseover", function (d) { showPopover.call(this, d); })
+      .on("mouseout",  function (d) { removePopovers(); });
       
   //Make the legend
     
@@ -123,6 +99,8 @@ function drawChart(data){
     .attr('class', 'legend')
     .attr("transform", function(d, i) {return "translate(" + (-width/2) + "," + (-height/2+i*25+15) +")"});
      
+  
+    
   //Add the legend rects
   legend.append('rect')
     .attr('width', legendRectSize)
@@ -139,61 +117,35 @@ function drawChart(data){
       });
           
   
-   path.transition()
+  
+  
+  
+      
+  d3.selectAll("#geoSelect")
+    .on("change", change);
+    
+    path.transition()
       .duration(500)
-      .attr("fill", function(d, i) { return color(d.data[0]); })
+      .attr("fill", function(d, i) { return color(d.data.Mode); })
       .attr("d", arc)
       .each(function(d) { this._current = d; });
-  
-  
-      
-
-    
-   
     
   function change(){
-    
-    displayData = [];
-    
-    metric = document.getElementById('modeYearSelect');
-    metricSelect = metric.value;
-    
-    data.forEach(function(d) {
-      
-      if (d.Year == metricSelect) {
-        displayData.push([d.Mode, d[geo.value]]);
-      }
-    });
-    console.log(displayData);
-    
-  
-      
-      path = svg.datum(displayData).selectAll(".arc").data(pie);
-      
-      path.transition()
-        .duration(1000)
-        .attrTween("d", function(d) {
-          this._current = this._current || d;
-          var interpolate = d3.interpolate(this._current, d);
-          this._current = interpolate(0);
-          return function(t) {
-            return arc(interpolate(t));
-          };
-        });
-       // .on("mouseover", function (d) { showPopover.call(this, d); })
-     // .on("mouseout",  function (d) { removePopovers(); });
-        
-               
-        
-   
-        
+      path = path.data(pie);
+      path.transition().duration(1000).attrTween("d", function(d) {
+                          this._current = this._current || d;
+                          var interpolate = d3.interpolate(this._current, d);
+                          this._current = interpolate(0);
+                          return function(t) {
+                                  return arc(interpolate(t));
+                          }; })
+      .on("mouseover", function (d) { showPopover.call(this, d); })
+      .on("mouseout",  function (d) { removePopovers(); });
   
   
   
          
   }
-  
-   
   
   //Function to remove the tooltips
   function removePopovers () {
@@ -204,36 +156,28 @@ function drawChart(data){
 
   //Function to show the tooltips
   function showPopover (d) {
-    console.log(d);
     $(this).popover({
-      title: d.data[0],
+      title: d.data.Mode,
       placement: 'auto right',
       container: 'body',
       trigger: 'manual',
       html : true,
       content: function() { 
         return "Number of Commuters: " + 
-        d3.format("1,000")(d.value); }
+        d3.format("1,000")(d.value ? d.value: d.y1 - d.y0); }
     });
     $(this).popover('show')
   }
   
 
    
-  function arcTween(a) {
-    var i = d3.interpolate(this._current, a);
-    this._current = i(0);
-    return function(t) {
-      return arc(i(t));
-    };
-  }
-  
-  //Listen for a change in the drop down menu  
-  d3.selectAll("#modeYearSelect")
-      .on("change", change);
-      
-       d3.selectAll("#geoSelect")
-    .on("change", change);
+function arcTween(a) {
+  var i = d3.interpolate(this._current, a);
+  this._current = i(0);
+  return function(t) {
+    return arc(i(t));
+  };
+}
 
 
 

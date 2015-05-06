@@ -1,9 +1,10 @@
+//Link to the Data
 var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=1Wlayz271NRiU1ATYfOxo5VFbYx0lTtcWJI-chNzRgqk&output=html';
 
 function drawChart(data){
+  
+  //Select Correct Sheet
   data = data["Travel Time by Percent"].elements;
-
- 
   
   //Width and height
   var w = 850;
@@ -22,9 +23,8 @@ function drawChart(data){
   //The color scale
   var color = d3.scale.ordinal()
     .range(['rgb(254,232,200)','rgb(253,187,132)','rgb(227,74,51)']);
+  
     
-  
-  
   //Manipulate the data in order to create grouped bar chart
   
   //Group by county name
@@ -34,10 +34,8 @@ function drawChart(data){
   var varNames = d3.keys(data[0])
     .filter(function(key){return key !==labelVar;});
     
-  
-    
-  var years = [];
-  
+  //Determine the number of years to display in the drop down menu by selecting the first 4 characters of the column heading, which should be the year
+  var years = [];  
   function determineYears(varNames) {
     var yearsArray = [];
     varNames.forEach(function(entry, index){
@@ -49,20 +47,16 @@ function drawChart(data){
     })
     return yearsArray;
   }
-years = determineYears(varNames);
+  years = determineYears(varNames);
 
-var htmlString = "<hr><h4>Percentage of Commuters Traveling 30, 45, and 60+ Minutes</h4>Year: <select id='yearSelect'>";
-
-years.forEach(function(entry, index){
-  htmlString = htmlString + "<option value='" + years[index] +"'>" + years[index] +"</option>";
-});
-
-htmlString = htmlString + "</select><br><Br>";
+  //Create dropdown menu
+  var htmlString = "<hr><h4>Percentage of Commuters Traveling 30, 45, and 60+ Minutes</h4>Year: <select id='yearSelect'>";
+  years.forEach(function(entry, index){
+    htmlString = htmlString + "<option value='" + years[index] +"'>" + years[index] +"</option>";
+  });
+  htmlString = htmlString + "</select><br><Br>";
  
-
-  
-  
-   //Create the div for the infographic and add it to the page.
+  //Create the div for the infographic and add it to the page.
   var div = document.createElement("div");
   var idAtt = document.createAttribute("id");
   idAtt.value = "commute";
@@ -70,16 +64,11 @@ htmlString = htmlString + "</select><br><Br>";
   document.getElementById('content').appendChild(div);
   document.getElementById('commute').innerHTML = htmlString;
   
-    //Get the selected metric from the drop down menu
+  //Get the selected metric from the drop down menu
   var metric = document.getElementById('yearSelect');
   var metricSelect = metric.value;
-  
-
- 
-        
-  
     
-  //This is kind of unnecessary.  I was originally going to do a stacked bar chart.                  
+  //Group the data. The y0, y1 stuff is kind of unnecessary.  I was originally going to do a stacked bar chart.                  
   data.forEach(function(d){
     var y0 = 0;
     d.mapping = varNames.map(function(name){
@@ -103,6 +92,7 @@ htmlString = htmlString + "</select><br><Br>";
                 .domain(data.map(function (d) { return d[labelVar]; }))
                 .rangeRoundBands([padding, w-padding*2], 0.2);
   
+  //This function returns an array of the coloumn heading names that start with the selected year for use by the d3 domain method
   function makeDomainArray(varNames){
       var domainArray = [];
       varNames.forEach(function(entry,index){
@@ -111,12 +101,9 @@ htmlString = htmlString + "</select><br><Br>";
          }
       });
       return domainArray;    
-      
-        
-      
   }
   
-      //Set the colors of the data categories
+  //Set the colors of the data categories
   color.domain(makeDomainArray(varNames));
   
   //set the x scale for spacing out the bars within each group
@@ -151,7 +138,7 @@ htmlString = htmlString + "</select><br><Br>";
       return "translate(" + x0(d[labelVar]) + ",0)"; 
     });
 
-  //Add the bars the the chart
+  //Add the bars to the chart
   selection.selectAll("rect")
     .data(function (d) {
       var newArray = [];
@@ -207,8 +194,7 @@ htmlString = htmlString + "</select><br><Br>";
     .attr('class', 'legend')
     .attr("transform", function(d, i) {return "translate(" + (padding + i*200) + "," + (h-marginBottom+65) +")"});
   
-    
-  //Add the legend rects
+   //Add the legend rects
   legend.append('rect')
     .attr('width', legendRectSize)
     .attr('height', legendRectSize)
@@ -245,24 +231,23 @@ htmlString = htmlString + "</select><br><Br>";
     $(this).popover('show')
   }
 
+  //Function for redrawing bars when new year is selected
   function change(){
     metricSelect = metric.value;
-  
-     x1 = d3.scale.ordinal()
-              .domain(makeDomainArray(varNames))
-              .rangeRoundBands([0, x0.rangeBand()]);
+    x1 = d3.scale.ordinal()
+      .domain(makeDomainArray(varNames))
+      .rangeRoundBands([0, x0.rangeBand()]);
     
     selection.selectAll("rect")
-    .data(function (d) {
-      var newArray = [];
-      d.mapping.forEach(function(entry, index){
-        
-        if(metricSelect == d.mapping[index].name.substring(0,4)){
-            newArray.push(d.mapping[index]);
+      .data(function (d) {
+        var newArray = [];
+        d.mapping.forEach(function(entry, index){
+          if(metricSelect == d.mapping[index].name.substring(0,4)){
+              newArray.push(d.mapping[index]);
           }
-           });
-      return newArray;
-       }) 
+        });
+        return newArray;
+      }) 
     .transition()
     .attr("width", x1.rangeBand())
     .attr("class", "bar")
@@ -271,7 +256,7 @@ htmlString = htmlString + "</select><br><Br>";
     .attr("height", function (d) { return y(d.y0) - y(d.y1); });
   }
 
-  
+  //Listen for a change in the drop down menu  
   d3.selectAll("#yearSelect")
       .on("change", change);
 }
