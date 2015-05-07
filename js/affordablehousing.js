@@ -16,12 +16,6 @@ function drawHousingChart(data){
     .filter(function(key){return key !==labelVar;});
     
       
-    //Create the HTML for the drop down menu
-    var htmlString = "Select Metric: <select id='crimeMetricSelect'>";
-    for (var i=0; i < varNames.length; i++ ) {
-      htmlString = htmlString + "<option value='"+varNames[i]+"'>" +varNames[i]+"</option>";
-    }
-    htmlString = htmlString + "</select>";
     
     
     //Create the div for the infographic and add it to the page.
@@ -30,7 +24,7 @@ function drawHousingChart(data){
     idAtt.value = "commute";
     div.setAttributeNode(idAtt);
     document.getElementById('content').appendChild(div);
-    document.getElementById('commute').innerHTML ="<hr><h4><i class='fa fa-home'></i>Housing Affordability</h4><h6>Percentage of housing units affordable to households earning 80% of the HUD Area Median Family Income</h6>" + htmlString+"<br><br>";
+    document.getElementById('commute').innerHTML ="<hr><h4><i class='fa fa-home'></i>Housing Affordability</h4><h6>Percentage of housing units affordable to households earning 80% of the HUD Area Median Family Income</h6>"; 
   
     //Width and height
     var w = 850;
